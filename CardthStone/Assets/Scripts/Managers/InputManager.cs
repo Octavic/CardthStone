@@ -23,7 +23,14 @@ namespace Assets.Scripts.Managers
         public void DrawCard()
         {
             var localPlayer = PlayerController.LocalPlayer;
-            localPlayer.CmdRequestCardDraw(localPlayer.PlayerId);
+            if (localPlayer.isServer)
+            {
+                localPlayer.MyPlayerState.DrawCardFromDeck();
+            }
+            else
+            {
+                localPlayer.CmdDrawCard();
+            }
         }
     }
 }

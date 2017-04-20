@@ -32,37 +32,72 @@ namespace Assets.Scripts.States
         /// <summary>
         /// Gets the player's hand
         /// </summary>
+        [SyncVar]
         public SyncListCard PlayerHand;
 
         /// <summary>
         /// Gets the health cards for the player
         /// </summary>
+        [SyncVar]
         public SyncListCard HealthCards;
 
         /// <summary>
         /// Gets a list of creatures this player controls
         /// </summary>
+        [SyncVar]
         public SyncListCreature Creatures;
 
         /// <summary>
         /// The draw deck for the player
         /// </summary>
+        [SyncVar]
         public SyncListCard PlayerDrawDeck;
 
         /// <summary>
-        /// Draws a new card from the deck
+        /// Draws a card from the deck
         /// </summary>
-        public void DrawCardFromPlayerDeck()
+        public void DrawCardFromDeck()
         {
-            if (this.PlayerDrawDeck.Count == 0)
-            {
-                return;
-            }
-
             var newCard = this.PlayerDrawDeck.First();
             this.PlayerDrawDeck.RemoveAt(0);
             this.PlayerHand.Add(newCard);
-            this.Displayer.RedrawPlayerHand();
+
+            if (this.isServer)
+            {
+                this.RpcRenderPlayerHand();
+            }
+            else
+            {
+                this.Displayer.RenderPlayerHand();
+            }
+
+            var letter = newCard.CardNumber.ToString();
+            if (newCard.CardNumber == 1)
+            {
+                letter = "A";
+            }
+            else if (newCard.CardNumber == 11)
+            {
+                letter = "J";
+            }
+            else if (newCard.CardNumber == 12)
+            {
+                letter = "Q";
+            }
+            else if (newCard.CardNumber == 13)
+            {
+                letter = "K";
+            }
+            Debug.Log("Player " + PlayerId + " has drawn a card: " + letter + " of " + newCard.CardSuit.ToString());
+        }
+
+        /// <summary>
+        /// Re-renders the player's hand on every client
+        /// </summary>
+        [ClientRpc]
+        public void RpcRenderPlayerHand()
+        {
+            this.Displayer.RenderPlayerHand();
         }
 
         /// <summary>
@@ -75,6 +110,26 @@ namespace Assets.Scripts.States
             this.HealthCards = new SyncListCard();
             this.Creatures = new SyncListCreature();
             this.PlayerDrawDeck = new SyncListCard();
+        }
+
+        /// <summary>
+        /// Called when a new instance initializes
+        /// </summary>
+        private void Start()
+        {
+            if (isServer)
+            {
+                var sharedState = GameObject.FindGameObjectWithTag(Tags.SharedState).GetComponent<SharedState>();
+                sharedState.PopulateTotalDeck();
+                var totalDeck = sharedState.TotalDeck;
+
+                int start = this.PlayerId * 26;
+                int end = start + 26;
+                for (int i = start; i < end; i++)
+                {
+                    this.PlayerDrawDeck.Add(totalDeck[i]);
+                }
+            }
         }
     }
 }

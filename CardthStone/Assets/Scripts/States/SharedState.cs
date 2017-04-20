@@ -37,7 +37,7 @@ namespace Assets.Scripts.States
         /// <summary>
         /// Gets the total deck that gets dealt out in the very beginning
         /// </summary>
-        public IList<Card> TotalDeck;
+        public SyncListCard TotalDeck;
 
         /// <summary>
         /// Gets a list of cards that's in the graveyard
@@ -96,28 +96,10 @@ namespace Assets.Scripts.States
         private int _randomSeed;
 
         /// <summary>
-        /// Used for initial 
-        /// 
+        /// Populates the total deck
         /// </summary>
-        private void Awake()
+        public void PopulateTotalDeck()
         {
-            TotalDeck = new List<Card>();
-            Graveyard = new SyncListCard();
-            this._randomSeed = new System.Random().Next();
-        }
-
-        /// <summary>
-        /// Used as initialization
-        /// </summary>
-        private void Start()
-        {
-            if (CurrentInstance != null)
-            {
-                Destroy(CurrentInstance);
-            }
-
-            CurrentInstance = this;
-
             _globalRandom = new System.Random(this._randomSeed);
 
             for (int suit = 0; suit < 4; suit++)
@@ -129,8 +111,27 @@ namespace Assets.Scripts.States
                     TotalDeck.Insert(randomPos, newCard);
                 }
             }
-      
-            base.OnStartServer();
+        }
+
+        /// <summary>
+        /// Used for initialization
+        /// </summary>
+        private void Awake()
+        {
+            TotalDeck = new SyncListCard();
+            Graveyard = new SyncListCard();
+            this._randomSeed = new System.Random().Next();
+            
+        }
+
+        /// <summary>
+        /// Called when a new instance is initialized
+        /// </summary>
+        private void Start()
+        {
+            CurrentInstance = this;
+
+            _globalRandom = new System.Random(this._randomSeed);
         }
     }
 }

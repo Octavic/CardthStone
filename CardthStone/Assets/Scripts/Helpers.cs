@@ -25,7 +25,5 @@ namespace Assets.Scripts
 
             return CardColorEnum.Red;
         }
-
-        public static int CurrentPlayerId = -1;
     }
 }

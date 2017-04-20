@@ -33,12 +33,19 @@ namespace Assets.Scripts
         /// <summary>
         /// The player state for the current player
         /// </summary>
-        private PlayerState _myPlayerState;
+        public PlayerState MyPlayerState;
 
         /// <summary>
         /// The player state of the enemy
         /// </summary>
-        private PlayerState _enemyPlayerState;
+        public PlayerState EnemyPlayerState;
+
+        private void Update()
+        {
+            var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<GameController>();
+            this.MyPlayerState = gameControllerInstance.PlayerStates[this.PlayerId]; ;
+            this.EnemyPlayerState =  gameControllerInstance.PlayerStates[(this.PlayerId + 1) % 2];
+        }
 
         /// <summary>
         /// Called when the local player is started
@@ -46,25 +53,16 @@ namespace Assets.Scripts
         public override void OnStartLocalPlayer()
         {
             // Assigns a player ID starting from 0;
-            var playerId = GameObject.FindGameObjectsWithTag(Tags.Player).Count() - 1;
-            
-            // Sets player ID
-            this.CmdSetPlayerId(playerId);
-            Helpers.CurrentPlayerId = playerId;
+            var newPlayerId = GameObject.FindGameObjectsWithTag(Tags.Player).Count() - 1;
+            this.PlayerId = newPlayerId;
 
-            // Get all the states
-            this.PopulatePlayerStates();
+            // Sets player ID
+            this.CmdSetPlayerId(newPlayerId);
 
             // Update local player
-            if (isLocalPlayer)
+            if (this.isLocalPlayer)
             {
                 PlayerController.LocalPlayer = this;
-            }
-
-            if (PlayerId == 1)
-            {
-                var sharedState = GameObject.FindGameObjectWithTag(Tags.SharedState).GetComponent<SharedState>();
-                sharedState.CmdRequestDealToPlayer();
             }
 
             base.OnStartLocalPlayer();
@@ -81,49 +79,12 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// Request the server to broadcast a card draw
+        /// Calls the server to draw a card
         /// </summary>
-        /// <param name="playerId">Id of the current player</param>
         [Command]
-        public void CmdRequestCardDraw(int playerId)
+        public void CmdDrawCard()
         {
-            this.RpcPlayerDrawCard(playerId);
-        }
-
-        /// <summary>
-        /// Draws a card into the player's hand from the deck
-        /// </summary>
-        /// <param name="playerId">Id of the current player</param>
-        [ClientRpc]
-        private void RpcPlayerDrawCard(int playerId)
-        {
-            if (!isServer)
-            {
-                return;
-            }
-            if (this.PlayerId != playerId)
-            {
-                return;
-            }
-
-            if (this._myPlayerState == null)
-            {
-                this.PopulatePlayerStates();
-            }
-
-            this._myPlayerState.DrawCardFromPlayerDeck();
-            Debug.Log("Player " + this.PlayerId + " draws a card");
-        }
-
-        /// <summary>
-        /// Populates the player states
-        /// </summary>
-        private void PopulatePlayerStates()
-        {
-            var gameController = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<GameController>();
-            var playerId = this.PlayerId;
-            this._myPlayerState = playerId == 0 ? gameController.Player0State : gameController.Player1State;
-            this._enemyPlayerState = playerId != 0 ? gameController.Player0State : gameController.Player1State;
+            this.MyPlayerState.DrawCardFromDeck();
         }
     }
 }

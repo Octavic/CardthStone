@@ -53,7 +53,7 @@ namespace Assets.Scripts.UI
         /// </summary>
         /// /// <param name="playerState">The player state that this player hand belongs to</param>
         /// <param name="showCards">True if the cards should be shown</param>
-        public void RearrangeHand(PlayerState playerState, bool showCards = true)
+        public void RenderPlayerHand(PlayerState playerState, bool showCards = true)
         {
             // Erase all current cards and recreate
             foreach (Transform child in transform)
@@ -68,7 +68,7 @@ namespace Assets.Scripts.UI
             {
                 for (int i = 0; i < playerState.PlayerHand.Count; i++)
                 {
-                    var card = playerState.PlayerDrawDeck[i];
+                    var card = playerState.PlayerHand[i];
                     var newCard = this.CreateCard(card);
                     this.Cards.Add(newCard);
                 }
