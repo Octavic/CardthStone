@@ -1,0 +1,38 @@
+Initialize engine version: 5.5.1f1 (88d00a7498cd)
+GfxDevice: creating device client; threaded=1
+Direct3D:
+    Version:  Direct3D 11.0 [level 11.1]
+    Renderer: NVIDIA GeForce GTX 950 (ID=0x1402)
+    Vendor:   NVIDIA
+    VRAM:     2016 MB
+    Driver:   21.21.13.7653
+Begin MonoManager ReloadAssembly
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.dll into Unity Child Domain
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\Assembly-CSharp.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\Assembly-CSharp.dll into Unity Child Domain
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.UI.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.UI.dll into Unity Child Domain
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Networking.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Networking.dll into Unity Child Domain
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
+Loading D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
+- Completed reload, in  0.094 seconds
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\System.Core.dll (this message is harmless)
+Platform assembly: D:\ProgrammingStuff\Unity\CardthStone\Builds\CardthStone_Data\Managed\System.dll (this message is harmless)
+desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
+<RI> Initializing input.
+<RI> Input initialized.
+<RI> Initialized touch support.
+UnloadTime: 1.349917 ms
+Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
+UnloadTime: 0.302463 ms
+
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 497.
+Total: 0.347138 ms (FindLiveObjects: 0.022941 ms CreateObjectMapping: 0.013885 ms MarkObjects: 0.299143 ms  DeleteObjects: 0.005433 ms)
+
+Setting up 2 worker threads for Enlighten.
+  Thread -> id: 193c -> priority: 1 
+  Thread -> id: 11dc -> priority: 1 
