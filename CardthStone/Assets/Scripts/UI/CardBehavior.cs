@@ -42,14 +42,14 @@ namespace Assets.Scripts.UI
         /// <summary>
         /// True if the card is selected
         /// </summary>
-        private bool isSelected;
+        private bool _isSelected;
 
         /// <summary>
         /// Used for initialization
         /// </summary>
         private void Start()
         {
-            this.isSelected = false;
+            this._isSelected = false;
         }
 
         /// <summary>
@@ -57,11 +57,11 @@ namespace Assets.Scripts.UI
         /// </summary>
         public void OnUserClick()
         {
-           this.isSelected = !this.isSelected;
+           this._isSelected = !this._isSelected;
 
             // Pops the new selected card out
             float newY = 0;
-            if (this.isSelected)
+            if (this._isSelected)
             {
                 newY = Settings.SelectedCardHeight;
             }
@@ -71,7 +71,7 @@ namespace Assets.Scripts.UI
             // Unselect the current card
             if (CardBehavior.CurrentlySelected != null)
             {
-                if (CardBehavior.CurrentlySelected.PokerCard == this.PokerCard)
+                if (CardBehavior.CurrentlySelected == this)
                 {
                     CardBehavior.CurrentlySelected = null;
                 }

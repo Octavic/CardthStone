@@ -92,6 +92,39 @@ namespace Assets.Scripts.States
         }
 
         /// <summary>
+        /// Summons a new creature from the player's hand
+        /// </summary>
+        /// <param name="attackCard">The attack card</param>
+        /// <param name="defenseCard">The defense card</param>
+        public void SummonCreature(Card attackCard, Card defenseCard)
+        {
+            // Validate to see if the player have those cards in hand
+            if (!this.PlayerHand.Contains(attackCard) || !this.PlayerHand.Contains(defenseCard))
+            {
+                Debug.Log("Error summoning creature: Player does NOT have the right cards in hand");
+                return;
+            }
+
+            // Remove the cards from hand
+            this.PlayerHand.Remove(attackCard);
+            this.PlayerHand.Remove(defenseCard);
+
+            this.Creatures.Add(new Creature(attackCard, defenseCard));
+
+            this.RpcRenderCreatureArea();
+            this.RpcRenderPlayerHand();
+        }
+
+        /// <summary>
+        /// Re-renders the player's creature area on every client
+        /// </summary>
+        [ClientRpc]
+        public void RpcRenderCreatureArea()
+        {
+            this.Displayer.RenderCreatureArea();
+        }
+
+        /// <summary>
         /// Re-renders the player's hand on every client
         /// </summary>
         [ClientRpc]

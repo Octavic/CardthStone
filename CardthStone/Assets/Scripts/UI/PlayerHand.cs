@@ -23,7 +23,52 @@ namespace Assets.Scripts.UI
         /// <summary>
         /// The current list of card objects
         /// </summary>
-        private IList<GameObject> Cards;
+        private IList<GameObject> CardGameObjects;
+
+        /// <summary>
+        /// Moves the current hand to their correct position
+        /// </summary>
+        /// /// <param name="playerState">The player state that this player hand belongs to</param>
+        /// <param name="showCards">True if the cards should be shown</param>
+        public void RenderPlayerHand(PlayerState playerState, bool showCards = true)
+        {
+            // Erase all current cards and recreate
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
+            }
+
+            this.CardGameObjects = new List<GameObject>();
+
+            // Add the correct cards
+            if (showCards)
+            {
+                for (int i = 0; i < playerState.PlayerHand.Count; i++)
+                {
+                    var card = playerState.PlayerHand[i];
+                    var newCard = this.CreateCard(card);
+                    this.CardGameObjects.Add(newCard);
+                }
+            }
+            else
+            {
+                var cardBackPrefab = PrefabManager.CurrentInstance.CardBackPrefabs[playerState.PlayerId];
+                for (int i = 0; i < playerState.PlayerHand.Count; i++)
+                {
+                    var newCard = this.CreateCardBack(cardBackPrefab);
+                    this.CardGameObjects.Add(newCard);
+                }
+            }
+
+            // Rearrange cards
+            for (int i = 0; i < this.CardGameObjects.Count; i++)
+            {
+                var curCard = this.CardGameObjects[i];
+                curCard.transform.localPosition = new Vector3(i * Settings.PlayerHandCardDistance, 0);
+            }
+
+            this.transform.localPosition = new Vector3(-this.CardGameObjects.Count * Settings.PlayerHandCardDistance / 2, 0);
+        }
 
         /// <summary>
         /// Creates a new card 
@@ -49,56 +94,11 @@ namespace Assets.Scripts.UI
         }
 
         /// <summary>
-        /// Moves the current hand to their correct position
-        /// </summary>
-        /// /// <param name="playerState">The player state that this player hand belongs to</param>
-        /// <param name="showCards">True if the cards should be shown</param>
-        public void RenderPlayerHand(PlayerState playerState, bool showCards = true)
-        {
-            // Erase all current cards and recreate
-            foreach (Transform child in transform)
-            {
-                Destroy(child.gameObject);
-            }
-
-            this.Cards = new List<GameObject>();
-
-            // Add the correct cards
-            if (showCards)
-            {
-                for (int i = 0; i < playerState.PlayerHand.Count; i++)
-                {
-                    var card = playerState.PlayerHand[i];
-                    var newCard = this.CreateCard(card);
-                    this.Cards.Add(newCard);
-                }
-            }
-            else
-            {
-                var cardBackPrefab = PrefabManager.CurrentInstance.CardBackPrefabs[playerState.PlayerId];
-                for (int i = 0; i < playerState.PlayerHand.Count;i++)
-                {
-                    var newCard = this.CreateCardBack(cardBackPrefab);
-                    this.Cards.Add(newCard);
-                }
-            }
-            
-            // Rearrange cards
-            for (int i = 0; i < this.Cards.Count; i++)
-            {
-                var curCard = this.Cards[i];
-                curCard.transform.localPosition = new Vector3(i * Settings.PlayerHandCardDistance, 0);
-            }
-
-            this.transform.localPosition = new Vector3(-this.Cards.Count * Settings.PlayerHandCardDistance / 2, 0);
-        }
-
-        /// <summary>
         /// Used for initialization
         /// </summary>
         private void Start()
         {
-            this.Cards = new List<GameObject>();
+            this.CardGameObjects = new List<GameObject>();
         }
     }
 }

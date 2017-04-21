@@ -43,6 +43,16 @@ namespace Assets.Scripts.Managers
         public GameObject CardUIPrefab;
 
         /// <summary>
+        /// The prefab for a plain card in UI
+        /// </summary>
+        public GameObject PlainUIPrefab;
+
+        /// <summary>
+        /// The prefab for a creature
+        /// </summary>
+        public GameObject CreaturePrefab;
+
+        /// <summary>
         /// used for initialization
         /// </summary>
         private void Start()

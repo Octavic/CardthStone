@@ -36,6 +36,11 @@ namespace Assets.Scripts.Managers
         public PlayerHand PlayerHandComponent;
 
         /// <summary>
+        /// The creature area
+        /// </summary>
+        public CreatureArea CreatureArea;
+
+        /// <summary>
         /// If the player's hand should be shown
         /// </summary>
         public bool IsOnBottom;
@@ -94,6 +99,14 @@ namespace Assets.Scripts.Managers
             this.Deck.SetActive(cardCount > 0);
             this.Deck.GetComponent<Image>().sprite = cardBack;
             this.DeckCount.text = cardCount.ToString();
+        }
+
+        /// <summary>
+        /// Re-renders the creature area to reflect changes
+        /// </summary>
+        public void RenderCreatureArea()
+        {
+            CreatureArea.RenderPlayerCreatures(this.TargetPlayerState);
         }
 
         /// <summary>

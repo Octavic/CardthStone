@@ -68,11 +68,11 @@ namespace Assets.Scripts
         /// <summary>
         /// Spawns the creature
         /// </summary>
-        /// <param name="attackCard">The attack card</param>
-        /// <param name="defenseCard">The defense card</param>
-        public void Spawn(Card attackCard, Card defenseCard)
+        /// <param name="targetCreature">The creature that needs to be spawned</param>
+        public void Spawn(Creature targetCreature)
         {
             // Add the cards to the card list
+            this.TargetCreature = targetCreature;
             this.UpdateIconAndNumber();
         }
 
@@ -80,66 +80,6 @@ namespace Assets.Scripts
         /// Generates the icon and number for attack/defense
         /// </summary>
         private void UpdateIconAndNumber()
-        {
-            var baseAttackCard = this.TargetCreature.AttackCards[0];
-            var baseDefenseCard = this.TargetCreature.DefenseCards[0];
-
-            this.CanTargetAttack = Helpers.SuitToColor((CardSuitEnum)baseAttackCard.CardSuit) == CardColorEnum.Black;
-            this.CanTargetBlock = Helpers.SuitToColor((CardSuitEnum)baseDefenseCard.CardSuit) == CardColorEnum.Red;
-
-            // Assign the suit sprite
-            this.AttackSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.AttackSuit];
-            this.DefenseSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.DefenseSuit];
-
-            // Calculate sum of attack numbers, as well as update free attack status
-            int newAttackNumber = baseAttackCard.CardNumber > 10 ? 10 : baseAttackCard.CardNumber;
-            for (int i = 1; i < this.TargetCreature.AttackCards.Count; i++)
-            {
-                var curCard = this.TargetCreature.AttackCards[i];
-
-                if (curCard.CardNumber > 10)
-                {
-                    newAttackNumber += 10;
-                }
-                else
-                {
-                    newAttackNumber += curCard.CardNumber;
-                }
-            }
-
-            // Calculate sum of defense numbers, as well as update free block status
-            int newDefenseNumber = baseDefenseCard.CardNumber > 10 ? 10 : baseDefenseCard.CardNumber;
-            for (int i = 1; i < this.TargetCreature.DefenseCards.Count; i++)
-            {
-                var curCard = this.TargetCreature.DefenseCards[i];
-
-                if (curCard.CardNumber > 10)
-                {
-                    newDefenseNumber += 10;
-                }
-                else
-                {
-                    newDefenseNumber += curCard.CardNumber;
-                }
-            }
-
-            // Assign the numbers
-            this.TargetCreature.TotalAttackNumber = newAttackNumber;
-            this.TargetCreature.TotalDefenseNumber = newDefenseNumber;
-
-            // Assign the number text
-            this.AttackNumberMesh.text = newAttackNumber.ToString();
-            this.DefenseNumberMesh.text = newDefenseNumber.ToString();
-
-            // Assign colors for new texts
-            this.AttackNumberMesh.color = _colorManager.GetCardColorFromSuit(this.TargetCreature.AttackSuit);
-            this.DefenseNumberMesh.color = _colorManager.GetCardColorFromSuit(this.TargetCreature.DefenseSuit);
-        }
-
-        /// <summary>
-        /// Used for initialization
-        /// </summary>
-        private void Start()
         {
             if (_spriteManager == null)
             {
@@ -151,6 +91,30 @@ namespace Assets.Scripts
                 _colorManager = GameObject.FindGameObjectWithTag(Tags.ColorManager).GetComponent<ColorManager>();
             }
 
+            var baseAttackCard = this.TargetCreature.AttackCard;
+            var baseDefenseCard = this.TargetCreature.DefenseCard;
+
+            this.CanTargetAttack = Helpers.SuitToColor(baseAttackCard.CardSuit) == CardColorEnum.Black;
+            this.CanTargetBlock = Helpers.SuitToColor(baseDefenseCard.CardSuit) == CardColorEnum.Red;
+
+            // Assign the suit sprite
+            this.AttackSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.AttackCard.CardSuit];
+            this.DefenseSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.DefenseCard.CardSuit];
+
+            // Assign the number text
+            this.AttackNumberMesh.text = TargetCreature.TotalAttackNumber.ToString();
+            this.DefenseNumberMesh.text = TargetCreature.TotalDefenseNumber.ToString();
+
+            // Assign colors for new texts
+            this.AttackNumberMesh.color = _colorManager.GetCardColorFromSuit(this.TargetCreature.AttackCard.CardSuit);
+            this.DefenseNumberMesh.color = _colorManager.GetCardColorFromSuit(this.TargetCreature.DefenseCard.CardSuit);
+        }
+
+        /// <summary>
+        /// Used for initialization
+        /// </summary>
+        private void Start()
+        {
             this.TargetCreature.IsTapped = false;
             this.TargetCreature.HaveSummoningSickness = true;
         }

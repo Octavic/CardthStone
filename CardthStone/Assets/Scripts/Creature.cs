@@ -17,38 +17,6 @@ namespace Assets.Scripts
     public struct Creature
     {
         /// <summary>
-        /// The suit of the creature's attack
-        /// </summary>
-        public CardSuitEnum AttackSuit
-        {
-            get
-            {
-                return this.AttackCards[0].CardSuit;
-            }
-        }
-
-        /// <summary>
-        /// Get the total attack number
-        /// </summary>
-        public int TotalAttackNumber;
-
-        /// <summary>
-        /// The suit of the creature's defense
-        /// </summary>
-        public CardSuitEnum DefenseSuit
-        {
-            get
-            {
-                return this.DefenseCards[0].CardSuit;
-            }
-        }
-
-        /// <summary>
-        /// Gets the total defense number
-        /// </summary>
-        public int TotalDefenseNumber;
-
-        /// <summary>
         /// Gets or sets the current health of the creature
         /// </summary>
         public int CurrentHealth;
@@ -61,26 +29,76 @@ namespace Assets.Scripts
         /// <summary>
         /// A list of attack cards, first one is base, rest is buff
         /// </summary>
-        public SyncListCard AttackCards;
+        public Card AttackCard;
 
         /// <summary>
         /// A list of defense cards, first one is base, rest is buff
         /// </summary>
-        public SyncListCard DefenseCards;
+        public Card DefenseCard;
 
         /// <summary>
-        /// Gets or sets a state indicating whether the creature have summoning sickness or not. Having summoning sickness means the creature cannot attack this turn
+        /// The temporary attack buff
+        /// </summary>
+        public int AttackBuff;
+        
+        /// <summary>
+        /// The temporary defense buff
+        /// </summary>
+        public int DefenseBuff;
+
+        /// <summary>
+        /// A state indicating whether the creature have summoning sickness or not. 
+        /// Having summoning sickness means the creature cannot attack this turn
         /// </summary>
         public bool HaveSummoningSickness;
 
         /// <summary>
+        /// Get the total attack number
+        /// </summary>
+        public int TotalAttackNumber
+        {
+            get
+            {
+                return Helpers.GetCardStrengthByNumber(this.AttackCard.CardNumber) + AttackBuff;
+            }
+        }
+
+        /// <summary>
+        /// Gets the total defense number
+        /// </summary>
+        public int TotalDefenseNumber
+        {
+            get
+            {
+                return Helpers.GetCardStrengthByNumber(this.DefenseCard.CardNumber) + DefenseBuff;
+            }
+        }
+
+        /// <summary>
+        /// Initializes a new instances of the <see cref="Creature"/> structure
+        /// </summary>
+        /// <param name="attackCard">The attack card</param>
+        /// <param name="defenseCard">The defense card</param>
+        public Creature(Card attackCard, Card defenseCard)
+        {
+            this.AttackCard = attackCard;
+            this.DefenseCard =defenseCard;
+
+            this.CurrentHealth = defenseCard.CardNumber > 10 ? 10 : defenseCard.CardNumber;
+            this.AttackBuff = 0;
+            this.DefenseBuff = 0;
+            this.IsTapped = false;
+            this.HaveSummoningSickness = true;
+        }
+
+        /// <summary>
         /// Flips the attack and defense stats
         /// </summary>
-        public void Flip()
+        public void FlipNumbers()
         {
-            var swapCards = this.AttackCards;
-            this.AttackCards = this.DefenseCards;
-            this.DefenseCards = swapCards;
+            var swapCard = this.AttackCard;
+            this.AttackCard = this.DefenseCard;
+            this.DefenseCard = swapCard;
         }
 
         /// <summary>
@@ -89,7 +107,8 @@ namespace Assets.Scripts
         /// <param name="card">target card</param>
         public void BuffAttack(Card card)
         {
-            this.AttackCards.Add(card);
+            this.AttackBuff += Helpers.GetCardStrengthByNumber(this.AttackCard.CardNumber);
+            this.AttackCard = card;
         }
 
         /// <summary>
@@ -98,8 +117,9 @@ namespace Assets.Scripts
         /// <param name="card">target card</param>
         public void BuffDefense(Card card)
         {
-            this.DefenseCards.Add(card);
-            this.CurrentHealth += card.CardNumber;
+            this.DefenseBuff += Helpers.GetCardStrengthByNumber(this.DefenseCard.CardNumber);
+            this.DefenseCard = card;
+            this.CurrentHealth += Helpers.GetCardStrengthByNumber(card.CardNumber);
         }
 
         /// <summary>
@@ -112,10 +132,8 @@ namespace Assets.Scripts
             this.HaveSummoningSickness = false;
 
             // Remove all cards under the buff
-            var newAttackCards = new SyncListCard { this.AttackCards.Last() };
-            this.AttackCards = newAttackCards;
-            var newDefenseCards = new SyncListCard { this.DefenseCards.Last() };
-            this.DefenseCards = newDefenseCards;
+            this.AttackBuff = 0;
+            this.DefenseBuff = 0;
 
             this.CurrentHealth = this.TotalDefenseNumber;
         }
