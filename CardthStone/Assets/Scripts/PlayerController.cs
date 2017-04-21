@@ -86,5 +86,16 @@ namespace Assets.Scripts
         {
             this.MyPlayerState.DrawCardFromDeck();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="attackCard"></param>
+        /// <param name="defenseCard"></param>
+        [Command]
+        public void CmdSummonCreature(Card attackCard, Card defenseCard)
+        {
+            this.MyPlayerState.SummonCreature(attackCard, defenseCard);
+        }
     }
 }

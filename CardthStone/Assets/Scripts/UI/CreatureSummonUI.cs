@@ -172,7 +172,15 @@ namespace Assets.Scripts.UI
             var defenseCard = this.PlacedDefenseCard != null ? this.PlacedDefenseCard.PokerCard : this.PlacedAttackCard.PokerCard;
 
             // Creates the creature
-            PlayerController.LocalPlayer.MyPlayerState.SummonCreature(attackCard, defenseCard);
+            var localPlayer = PlayerController.LocalPlayer;
+            if (localPlayer.isServer)
+            {
+                PlayerController.LocalPlayer.MyPlayerState.SummonCreature(attackCard, defenseCard);
+            }
+            else
+            {
+                localPlayer.CmdSummonCreature(attackCard, defenseCard);
+            }
 
             // All is done, close the summon window
             this.CloseSummonWindow();

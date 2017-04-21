@@ -106,7 +106,7 @@ namespace Assets.Scripts.Managers
         /// </summary>
         public void RenderCreatureArea()
         {
-            CreatureArea.RenderPlayerCreatures(this.TargetPlayerState);
+            this.CreatureArea.RenderPlayerCreatures(this.TargetPlayerState);
         }
 
         /// <summary>
@@ -114,7 +114,7 @@ namespace Assets.Scripts.Managers
         /// </summary>
         public void RenderPlayerHand()
         {
-            PlayerHandComponent.RenderPlayerHand(this.TargetPlayerState, true);
+            this.PlayerHandComponent.RenderPlayerHand(this.TargetPlayerState, true);
         }
     }
 }

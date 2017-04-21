@@ -88,6 +88,7 @@ namespace Assets.Scripts.States
             {
                 letter = "K";
             }
+
             Debug.Log("Player " + PlayerId + " has drawn a card: " + letter + " of " + newCard.CardSuit.ToString());
         }
 
