@@ -71,25 +71,7 @@ namespace Assets.Scripts.States
                 this.Displayer.RenderPlayerHand();
             }
 
-            var letter = newCard.CardNumber.ToString();
-            if (newCard.CardNumber == 1)
-            {
-                letter = "A";
-            }
-            else if (newCard.CardNumber == 11)
-            {
-                letter = "J";
-            }
-            else if (newCard.CardNumber == 12)
-            {
-                letter = "Q";
-            }
-            else if (newCard.CardNumber == 13)
-            {
-                letter = "K";
-            }
-
-            Debug.Log("Player " + PlayerId + " has drawn a card: " + letter + " of " + newCard.CardSuit.ToString());
+            Debug.Log("Player " + PlayerId + " has drawn a card: " + newCard.ToString());
         }
 
         /// <summary>
@@ -111,9 +93,35 @@ namespace Assets.Scripts.States
             this.PlayerHand.Remove(defenseCard);
 
             this.Creatures.Add(new Creature(attackCard, defenseCard));
+            Debug.Log("Player " + PlayerId + " has summon creature with " + attackCard.ToString() + " and " + defenseCard.ToString());
 
             this.RpcRenderCreatureArea();
             this.RpcRenderPlayerHand();
+        }
+
+        /// <summary>
+        /// Assigns the initial health cards
+        /// </summary>
+        /// <param name="suits">The suits of the cards</param>
+        /// <param name="numbers">The numbers of the cards</param>
+        public void AssignInitialHealthCards(int[] suits, int[] numbers)
+        {
+            var suitLength = suits.Length;
+            // Check to make sure you can construct valid cards
+            if (suitLength != numbers.Length)
+            {
+                throw new InvalidProgramException("Lengths of suits and numbers do not match!");
+            }
+
+            for (int i = 0; i < suitLength; i++)
+            {
+                var newCard = new Card((CardSuitEnum)suits[i], numbers[i]);
+                this.PlayerHand.Remove(newCard);
+                this.HealthCards.Add(newCard);
+            }
+
+            this.RpcRenderPlayerHand();
+            this.RpcRenderPlayerHealthCards();
         }
 
         /// <summary>
@@ -132,6 +140,15 @@ namespace Assets.Scripts.States
         public void RpcRenderPlayerHand()
         {
             this.Displayer.RenderPlayerHand();
+        }
+
+        /// <summary>
+        /// Re-render's the player's health cards
+        /// </summary>
+        [ClientRpc]
+        public void RpcRenderPlayerHealthCards()
+        {
+            this.Displayer.RenderPlayerHealthCards();
         }
 
         /// <summary>
@@ -154,8 +171,14 @@ namespace Assets.Scripts.States
             if (isServer)
             {
                 var sharedState = GameObject.FindGameObjectWithTag(Tags.SharedState).GetComponent<SharedState>();
-                sharedState.PopulateTotalDeck();
+                
                 var totalDeck = sharedState.TotalDeck;
+
+                // If the total deck is empty, populate it
+                if (totalDeck.Count == 0)
+                {
+                    sharedState.PopulateTotalDeck();
+                }
 
                 int start = this.PlayerId * 26;
                 int end = start + 26;

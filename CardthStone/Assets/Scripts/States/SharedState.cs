@@ -121,7 +121,6 @@ namespace Assets.Scripts.States
             TotalDeck = new SyncListCard();
             Graveyard = new SyncListCard();
             this._randomSeed = new System.Random().Next();
-            
         }
 
         /// <summary>
@@ -130,6 +129,7 @@ namespace Assets.Scripts.States
         private void Start()
         {
             CurrentInstance = this;
+            
 
             _globalRandom = new System.Random(this._randomSeed);
         }

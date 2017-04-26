@@ -41,6 +41,11 @@ namespace Assets.Scripts.Managers
         public CreatureArea CreatureArea;
 
         /// <summary>
+        /// The player's health cards
+        /// </summary>
+        public PlayerHealthCards PlayerHealthCards;
+
+        /// <summary>
         /// If the player's hand should be shown
         /// </summary>
         public bool IsOnBottom;
@@ -115,6 +120,14 @@ namespace Assets.Scripts.Managers
         public void RenderPlayerHand()
         {
             this.PlayerHandComponent.RenderPlayerHand(this.TargetPlayerState, true);
+        }
+
+        /// <summary>
+        /// Renders the player's health cards
+        /// </summary>
+        public void RenderPlayerHealthCards()
+        {
+            this.PlayerHealthCards.RenderPlayerHealthCards(this.TargetPlayerState, true);
         }
     }
 }

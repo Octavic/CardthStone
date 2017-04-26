@@ -14,6 +14,9 @@ namespace Assets.Scripts.UI
     using UnityEngine;
     using UnityEngine.UI;
 
+    /// <summary>
+    /// The UI that controls creature summoning, etc
+    /// </summary>
     public class CreatureSummonUI : MonoBehaviour
     {
         #region Unity Editor Links
@@ -23,30 +26,15 @@ namespace Assets.Scripts.UI
         public Button SummonButton;
 
         /// <summary>
-        /// The game object where cards are placed
+        /// Card slot for the attack card
         /// </summary>
-        public GameObject CardsParent;
+        public CardSlot AttackCardSlot;
 
         /// <summary>
-        /// The anchor point for the left card
+        /// Card slot for the defense card
         /// </summary>
-        public Vector2 LeftCardAnchorPoint;
-
-        /// <summary>
-        /// The anchor point for the right card
-        /// </summary>
-        public Vector2 RightCardAnchorPoint;
+        public CardSlot DefenseCardSlot;
         #endregion
-
-        /// <summary>
-        /// The current attack card
-        /// </summary>
-        public PlainCardBehavior PlacedAttackCard { get; private set; }
-
-        /// <summary>
-        /// The current defense card
-        /// </summary>
-        public PlainCardBehavior PlacedDefenseCard { get; private set; }
 
         /// <summary>
         /// Used for initialization
@@ -54,103 +42,19 @@ namespace Assets.Scripts.UI
         private void Start()
         {
             this.SummonButton.interactable = false;
-            this.PlacedAttackCard = null;
-            this.PlacedDefenseCard = null;
         }
-
-        /// <summary>
-        /// When the user clicks the left button
-        /// </summary>
-        public void OnTryPlaceAttack()
-        {
-            // If there was a card already, no matter what happens, it's gone
-            if (this.PlacedAttackCard != null)
-            {
-                Destroy(this.PlacedAttackCard.gameObject);
-                this.PlacedAttackCard = null;
-            }
-
-            // Grab the selected card
-            var selectedCard = CardBehavior.CurrentlySelected;
-            if (selectedCard != null)
-            {
-                // Create a new card
-                var newCard = this.CreateCard(selectedCard.PokerCard);
-                newCard.transform.localPosition = this.LeftCardAnchorPoint;
-                this.PlacedAttackCard = newCard;
-                selectedCard.OnUserClick();
-
-                // If the selected card is the same as right side, remove the right side card and assume user is moving the card from right to left
-                if (this.PlacedDefenseCard != null)
-                {
-                    if (newCard.PokerCard == this.PlacedDefenseCard.PokerCard)
-                    {
-                        Destroy(this.PlacedDefenseCard.gameObject);
-                        this.PlacedDefenseCard = null;
-                    }
-                }
-            }
-
-            this.CheckCreatureValibility();
-        }
-
-        /// <summary>
-        /// When the user clicks the left button
-        /// </summary>
-        public void OnTryPlaceDefenseClick()
-        {
-            // If there was a card already, no matter what happens, it's gone
-            if (this.PlacedDefenseCard != null)
-            {
-                Destroy(this.PlacedDefenseCard.gameObject);
-                this.PlacedDefenseCard = null;
-            }
-
-            // Grab the selected card
-            var selectedCard = CardBehavior.CurrentlySelected;
-            if (selectedCard != null)
-            {
-                // Create a new card
-                var newCard = this.CreateCard(selectedCard.PokerCard);
-                newCard.transform.localPosition = this.RightCardAnchorPoint;
-                this.PlacedDefenseCard = newCard;
-                selectedCard.OnUserClick();
-
-                // If the selected card is the same as right side, remove the right side card and assume user is moving the card from right to left
-                if (this.PlacedAttackCard != null)
-                {
-                    if (newCard.PokerCard == this.PlacedAttackCard.PokerCard)
-                    {
-                        Destroy(this.PlacedAttackCard.gameObject);
-                        this.PlacedAttackCard = null;
-                    }
-                }
-            }
-
-            this.CheckCreatureValibility();
-        }
-
+        
         /// <summary>
         /// Cancels the summon
         /// </summary>
         public void CloseSummonWindow()
         {
             // Delete the cards
-            if (this.PlacedDefenseCard != null)
-            {
-                Destroy(this.PlacedDefenseCard.gameObject);
-                this.PlacedDefenseCard = null;
-            }
-
-            if (this.PlacedAttackCard != null)
-            {
-                Destroy(this.PlacedAttackCard.gameObject);
-                this.PlacedAttackCard = null;
-            }
-
-            this.SummonButton.interactable = false;
+            this.AttackCardSlot.RemoveCard();
+            this.DefenseCardSlot.RemoveCard();
 
             // Set object inactive
+            this.SummonButton.interactable = false;
             this.gameObject.SetActive(false);
         }
 
@@ -168,8 +72,8 @@ namespace Assets.Scripts.UI
             }
 
             // Grabs the poker cards
-            var attackCard = this.PlacedAttackCard != null ? this.PlacedAttackCard.PokerCard : this.PlacedDefenseCard.PokerCard;
-            var defenseCard = this.PlacedDefenseCard != null ? this.PlacedDefenseCard.PokerCard : this.PlacedAttackCard.PokerCard;
+            var attackCard = this.AttackCardSlot.PlacedCard != null ? AttackCardSlot.PlacedCard.PokerCard : this.DefenseCardSlot.PlacedCard.PokerCard;
+            var defenseCard = this.DefenseCardSlot.PlacedCard != null ? this.DefenseCardSlot.PlacedCard.PokerCard : AttackCardSlot.PlacedCard.PokerCard;
 
             // Creates the creature
             var localPlayer = PlayerController.LocalPlayer;
@@ -187,31 +91,17 @@ namespace Assets.Scripts.UI
         }
 
         /// <summary>
-        /// Creates a new card 
-        /// </summary>
-        /// <param name="card">Target suit and number to be created</param>
-        /// <returns>The class of the newly created card</returns>
-        private PlainCardBehavior CreateCard(Card card)
-        {
-            var newCardObject = Instantiate(PrefabManager.CurrentInstance.PlainUIPrefab, this.CardsParent.transform);
-            var newCardClass = newCardObject.GetComponent<PlainCardBehavior>();
-            newCardClass.Create(card);
-
-            return newCardClass;
-        }
-
-        /// <summary>
         /// Checks the currently placed cards to see if the creature is ready to be summoned
         /// </summary>
-        private void CheckCreatureValibility()
+        public void CheckCreatureValibility()
         {
-            if (this.PlacedAttackCard == null && (this.PlacedDefenseCard == null || this.PlacedDefenseCard.PokerCard.CardNumber != 2))
+            if (this.AttackCardSlot.PlacedCard == null && (this.DefenseCardSlot.PlacedCard == null || this.DefenseCardSlot.PlacedCard.PokerCard.CardNumber != 2))
             {
                 SummonButton.interactable = false;
                 return;
             }
 
-            if (this.PlacedDefenseCard == null && (this.PlacedAttackCard == null || this.PlacedAttackCard.PokerCard.CardNumber != 2))
+            if (this.DefenseCardSlot.PlacedCard == null && (this.AttackCardSlot.PlacedCard == null || this.AttackCardSlot.PlacedCard.PokerCard.CardNumber != 2))
             {
                 SummonButton.interactable = false;
                 return;

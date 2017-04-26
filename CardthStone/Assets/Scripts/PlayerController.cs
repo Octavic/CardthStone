@@ -88,10 +88,21 @@ namespace Assets.Scripts
         }
 
         /// <summary>
-        /// 
+        /// Calls the server to assign the initial health cards
         /// </summary>
-        /// <param name="attackCard"></param>
-        /// <param name="defenseCard"></param>
+        /// <param name="suits">The suits of the cards</param>
+        /// <param name="numbers">The numbers of the cards</param>
+        [Command]
+        public void CmdAssignInitialHealthCards(int[] suits, int[] numbers)
+        {
+            this.MyPlayerState.AssignInitialHealthCards(suits, numbers);
+        }
+
+        /// <summary>
+        /// Calls the server to summon a creature
+        /// </summary>
+        /// <param name="attackCard">The attack card used to summon the creature</param>
+        /// <param name="defenseCard">The defense card used to summon the creature</param>
         [Command]
         public void CmdSummonCreature(Card attackCard, Card defenseCard)
         {

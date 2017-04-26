@@ -1,5 +1,5 @@
 ﻿//--------------------------------------------------------------------------------------------------------------------
-//  <copyright file="TestBuffAttackButton.cs" company="Yifei Xu">
+//  <copyright file="PlayerHealthCards.cs" company="Yifei Xu">
 //    Copyright (c) Yifei Xu.  All rights reserved.
 //  </copyright>
 //--------------------------------------------------------------------------------------------------------------------
@@ -16,9 +16,9 @@ namespace Assets.Scripts.UI
     using States;
 
     /// <summary>
-    /// The current hand for the player
+    /// Shows the player's health card
     /// </summary>
-    public class PlayerHand : MonoBehaviour
+    public class PlayerHealthCards : MonoBehaviour
     {
         /// <summary>
         /// The current list of card objects
@@ -26,11 +26,11 @@ namespace Assets.Scripts.UI
         private IList<GameObject> CardGameObjects;
 
         /// <summary>
-        /// Moves the current hand to their correct position
+        /// Moves the current health cards to their correct position
         /// </summary>
         /// <param name="playerState">The player state that this player hand belongs to</param>
         /// <param name="showCards">True if the cards should be shown</param>
-        public void RenderPlayerHand(PlayerState playerState, bool showCards = true)
+        public void RenderPlayerHealthCards(PlayerState playerState, bool showCards = true)
         {
             // Erase all current cards and recreate
             foreach (Transform child in transform)
@@ -43,9 +43,9 @@ namespace Assets.Scripts.UI
             // Add the correct cards
             if (showCards)
             {
-                for (int i = 0; i < playerState.PlayerHand.Count; i++)
+                for (int i = 0; i < playerState.HealthCards.Count; i++)
                 {
-                    var card = playerState.PlayerHand[i];
+                    var card = playerState.HealthCards[i];
                     var newCard = this.CreateCard(card);
                     this.CardGameObjects.Add(newCard);
                 }
@@ -53,7 +53,7 @@ namespace Assets.Scripts.UI
             else
             {
                 var cardBackPrefab = PrefabManager.CurrentInstance.CardBackPrefabs[playerState.PlayerId];
-                for (int i = 0; i < playerState.PlayerHand.Count; i++)
+                for (int i = 0; i < playerState.HealthCards.Count; i++)
                 {
                     var newCard = this.CreateCardBack(cardBackPrefab);
                     this.CardGameObjects.Add(newCard);
@@ -77,8 +77,8 @@ namespace Assets.Scripts.UI
         /// <returns>The class of the newly created card</returns>
         private GameObject CreateCard(Card card)
         {
-            var newCardObject = Instantiate(PrefabManager.CurrentInstance.CardUIPrefab, this.transform);
-            var newCardClass = newCardObject.GetComponent<CardBehavior>();
+            var newCardObject = Instantiate(PrefabManager.CurrentInstance.PlainUIPrefab, this.transform);
+            var newCardClass = newCardObject.GetComponent<PlainCardBehavior>();
             newCardClass.Create(card);
 
             return newCardObject;

@@ -50,6 +50,44 @@ namespace Assets.Scripts
         }
 
         /// <summary>
+        /// Gets current card's card strength
+        /// </summary>
+        /// <returns>The card strength when used as health or attack for creature or health cards</returns>
+        public int GetStrength()
+        {
+            return this.CardNumber < 10 ? this.CardNumber : 10;
+        }
+
+        /// <summary>
+        /// Write out the card in a string
+        /// </summary>
+        /// <returns>The card in a string</returns>
+        public override string ToString()
+        {
+            string numberString = null;
+            switch (this.CardNumber)
+            {
+                case 1:
+                    numberString = "A";
+                    break;
+                case 11:
+                    numberString = "J";
+                    break;
+                case 12:
+                    numberString = "Q";
+                    break;
+                case 13:
+                    numberString = "K";
+                    break;
+                default:
+                    numberString = this.CardNumber.ToString();
+                    break;
+            }
+
+            return numberString + " of " + this.CardSuit.ToString();
+        }
+
+        /// <summary>
         /// Overloads the == operand
         /// </summary>
         /// <param name="a">Card A</param>
