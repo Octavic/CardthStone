@@ -13,6 +13,7 @@ namespace Assets.Scripts.UI
     using Managers;
     using UnityEngine;
     using UnityEngine.Events;
+    using Misc;
 
     /// <summary>
     /// A slot where cards can be placed, used in creature summon, health, and mulligan. 
@@ -40,12 +41,19 @@ namespace Assets.Scripts.UI
         private static IList<UnityEvent> _checkActions;
 
         /// <summary>
+        /// The hand of the current player
+        /// </summary>
+        private static PlayerHand _currentPlayerHand;
+
+        /// <summary>
         /// Called only once for initialization
         /// </summary>
         private void Awake()
         {
             CardSlot._instances = new List<CardSlot>();
             CardSlot._checkActions = new List<UnityEvent>();
+
+            CardSlot._currentPlayerHand = GameObject.Find(ObjectNames.DisplayManagerBot).GetComponent<DisplayManager>().PlayerHandComponent;
         }
 
         /// <summary>
@@ -53,12 +61,35 @@ namespace Assets.Scripts.UI
         /// </summary>
         private void Start()
         {
+            if (CardSlot._instances == null)
+            {
+                this.Awake();
+            }
+
             CardSlot._instances.Add(this);
 
             if (this.CheckDelegate != null)
             {
                 CardSlot._checkActions.Add(this.CheckDelegate);
             }
+        }
+
+        /// <summary>
+        /// Checks all the slots to see if a certain card is in a slot
+        /// </summary>
+        /// <param name="card">Target card</param>
+        /// <returns>True if the card is in a slot somewhere</returns>
+        public static bool IsCardInSlot(Card card)
+        {
+            foreach (var instance in _instances)
+            {
+                if (instance.PlacedCard != null && instance.PlacedCard.PokerCard == card)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -93,6 +124,8 @@ namespace Assets.Scripts.UI
             {
                 action.Invoke();
             }
+
+            CardSlot._currentPlayerHand.RenderPlayerHand(PlayerController.LocalPlayer.MyPlayerState);
         }
 
         /// <summary>

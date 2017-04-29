@@ -48,6 +48,11 @@ namespace Assets.Scripts.Managers
         public GameObject PlainUIPrefab;
 
         /// <summary>
+        /// The prefab for a used card
+        /// </summary>
+        public GameObject UsedCardPrefab;
+
+        /// <summary>
         /// The prefab for a creature
         /// </summary>
         public GameObject CreaturePrefab;

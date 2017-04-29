@@ -104,5 +104,48 @@ namespace Assets.Scripts
                 return 2f;
             }
         }
+
+        /// <summary>
+        /// The health assign UI final position
+        /// </summary>
+        private static Vector2 _healthAssignUIFinalPosition = new Vector2(642, 116);
+
+        /// <summary>
+        /// Gets the final position of the health assign UI
+        /// </summary>
+        public static Vector2 HealthAssignUIFinalPosition
+        {
+            get
+            {
+                return _healthAssignUIFinalPosition;
+            }
+        }
+
+        /// <summary>
+        /// The mulligan UI final position
+        /// </summary>
+        private static Vector2 _mulliganUIFinalPosition = new Vector2(585, 68);
+
+        /// <summary>
+        /// Gets the final position of the mulligan UI;
+        /// </summary>
+        public static Vector2 MulliganUIFinalPosition
+        {
+            get
+            {
+                return _mulliganUIFinalPosition;
+            }
+        }
+
+        /// <summary>
+        /// Gets the amount of time the health assign UI has to go to normal position
+        /// </summary>
+        public static float UIMovementDuration
+        {
+            get
+            {
+                return 0.35f;
+            }
+        }
     }
 }

@@ -62,16 +62,10 @@ namespace Assets.Scripts.States
             this.PlayerDrawDeck.RemoveAt(0);
             this.PlayerHand.Add(newCard);
 
-            if (this.isServer)
-            {
-                this.RpcRenderPlayerHand();
-            }
-            else
-            {
-                this.Displayer.RenderPlayerHand();
-            }
-
             Debug.Log("Player " + PlayerId + " has drawn a card: " + newCard.ToString());
+
+            this.RpcRenderPlayerHand();
+
         }
 
         /// <summary>
@@ -125,6 +119,25 @@ namespace Assets.Scripts.States
         }
 
         /// <summary>
+        /// Mulligan a card in the user's hand
+        /// </summary>
+        /// <param name="targetCard">The card to be mulligan'ed</param>
+        public void MulliganCard(Card card)
+        {
+            if (!PlayerHand.Contains(card))
+            {
+                Debug.Log("Error: Player trying to mulligan a card that's not in the player's hand.");
+            }
+            else
+            {
+                PlayerHand.Remove(card);
+                this.DrawCardFromDeck();
+                this.RpcRenderPlayerHand();
+            }
+        }
+
+        #region RPC render functions
+        /// <summary>
         /// Re-renders the player's creature area on every client
         /// </summary>
         [ClientRpc]
@@ -150,7 +163,9 @@ namespace Assets.Scripts.States
         {
             this.Displayer.RenderPlayerHealthCards();
         }
+        #endregion
 
+        #region Mono behavior functions
         /// <summary>
         /// Used for initialization
         /// </summary>
@@ -188,5 +203,6 @@ namespace Assets.Scripts.States
                 }
             }
         }
+        #endregion
     }
 }

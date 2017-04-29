@@ -17,20 +17,6 @@ namespace Assets.Scripts.Managers
     /// </summary>
     public class InputManager : MonoBehaviour
     {
-        /// <summary>
-        /// Draws a new card for the current player
-        /// </summary>
-        public void DrawCard()
-        {
-            var localPlayer = PlayerController.LocalPlayer;
-            if (localPlayer.isServer)
-            {
-                localPlayer.MyPlayerState.DrawCardFromDeck();
-            }
-            else
-            {
-                localPlayer.CmdDrawCard();
-            }
-        }
+        
     }
 }

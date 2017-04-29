@@ -14,6 +14,7 @@ namespace Assets.Scripts
     using UnityEngine.Networking;
     using UnityEngine.UI;
     using States;
+    using Managers;
 
     /// <summary>
     /// Controls the player behavior
@@ -33,18 +34,33 @@ namespace Assets.Scripts
         /// <summary>
         /// The player state for the current player
         /// </summary>
-        public PlayerState MyPlayerState;
+        public PlayerState MyPlayerState
+        {
+            get
+            {
+                var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<PlayerStateManager>();
+                return gameControllerInstance.PlayerStates[this.PlayerId];
+            }
+        }
 
         /// <summary>
         /// The player state of the enemy
         /// </summary>
-        public PlayerState EnemyPlayerState;
+        public PlayerState EnemyPlayerState
+        {
+            get
+            {
+                var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<PlayerStateManager>();
+                return gameControllerInstance.PlayerStates[(this.PlayerId + 1) % 2];
+            }
+        }
 
+        /// <summary>
+        /// Called once per frame
+        /// </summary>
         private void Update()
         {
-            var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<GameController>();
-            this.MyPlayerState = gameControllerInstance.PlayerStates[this.PlayerId]; ;
-            this.EnemyPlayerState =  gameControllerInstance.PlayerStates[(this.PlayerId + 1) % 2];
+            var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<PlayerStateManager>();
         }
 
         /// <summary>
@@ -88,6 +104,21 @@ namespace Assets.Scripts
         }
 
         /// <summary>
+        /// Ends the current turn
+        /// </summary>
+        [Command]
+        public void CmdEndCurrentTurn()
+        {
+            if (this.PlayerId != GameController.CurrentInstance.CurrentPlayerId)
+            {
+                Debug.Log("Error: Trying to end turn when it wasn't the player's turn to begin with!");
+                return;
+            }
+
+            GameController.CurrentInstance.EndCurrentTurn();
+        }
+
+        /// <summary>
         /// Calls the server to assign the initial health cards
         /// </summary>
         /// <param name="suits">The suits of the cards</param>
@@ -107,6 +138,16 @@ namespace Assets.Scripts
         public void CmdSummonCreature(Card attackCard, Card defenseCard)
         {
             this.MyPlayerState.SummonCreature(attackCard, defenseCard);
+        }
+
+        /// <summary>
+        /// Calls the server to mulligan a card in the user's hand
+        /// </summary>
+        /// <param name="targetCard">The card to be mulligan'ed</param>
+        [Command]
+        public void CmdMulliganCard(Card targetCard)
+        {
+            this.MyPlayerState.MulliganCard(targetCard);
         }
     }
 }

@@ -43,11 +43,21 @@ namespace Assets.Scripts.UI
             // Add the correct cards
             if (showCards)
             {
+                var usedCardPrefab = PrefabManager.CurrentInstance.UsedCardPrefab;
                 for (int i = 0; i < playerState.PlayerHand.Count; i++)
                 {
                     var card = playerState.PlayerHand[i];
-                    var newCard = this.CreateCard(card);
-                    this.CardGameObjects.Add(newCard);
+
+                    // If the card is being used in a slot somewhere, replace the normal sprite with a outline
+                    if (!CardSlot.IsCardInSlot(card))
+                    {
+                        this.CardGameObjects.Add(this.CreateCard(card));
+                    }
+                    else
+                    {
+                        var newCard = Instantiate(usedCardPrefab, this.transform);
+                        this.CardGameObjects.Add(newCard);
+                    }
                 }
             }
             else

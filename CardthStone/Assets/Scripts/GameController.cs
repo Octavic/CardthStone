@@ -12,22 +12,17 @@ namespace Assets.Scripts
     using System.Text;
     using UnityEngine;
     using UnityEngine.Networking;
-    using States;
+    using Managers;
 
     /// <summary>
-    /// The unified game controller
+    /// A server-side only object that controls the overall flow of the game
     /// </summary>
-    public class GameController : MonoBehaviour
+    public class GameController : NetworkBehaviour
     {
         /// <summary>
-        /// The player state for player 0
+        /// The component for the player state manager
         /// </summary>
-        public PlayerState Player0State;
-
-        /// <summary>
-        /// The player state for player 1
-        /// </summary>
-        public PlayerState Player1State;
+        public PlayerStateManager PlayerStateManagerComponent;
 
         /// <summary>
         /// Gets the current instance of the game controller
@@ -35,9 +30,40 @@ namespace Assets.Scripts
         public static GameController CurrentInstance { get; private set; }
 
         /// <summary>
-        /// A list of player states
+        /// Gets or sets the current turn number. -1 if the game have not started yet
         /// </summary>
-        public IList<PlayerState> PlayerStates { get; private set; }
+        [SyncVar]
+        public int TurnNumber;
+
+        /// <summary>
+        /// Gets the current phase of game
+        /// </summary>
+        [SyncVar]
+        public GamePhaseEnum CurrentPhase;
+
+        /// <summary>
+        /// Gets Id of the player who is in charge of the current turn
+        /// </summary>
+        [SyncVar]
+        public int CurrentPlayerId;
+
+        /// <summary>
+        /// Called when the turn is over
+        /// </summary>
+        public void EndCurrentTurn()
+        {
+            this.TurnNumber++;
+
+            if (this.CurrentPhase == GamePhaseEnum.Mulligan && this.TurnNumber >= 3)
+            {
+                this.TurnNumber = 1;
+                this.CurrentPhase = GamePhaseEnum.Normal;
+            }
+            else
+            {
+                this.CurrentPlayerId = (this.CurrentPlayerId + 1) % 2;
+            }
+        }
 
         /// <summary>
         /// Used for initialization
@@ -50,43 +76,36 @@ namespace Assets.Scripts
             }
 
             GameController.CurrentInstance = this;
-
-            // Assigns the player state
-            this.PlayerStates = new List<PlayerState>();
-            this.PlayerStates.Add(this.Player0State);
-            this.PlayerStates.Add(this.Player1State);
         }
 
         /// <summary>
-        /// Gets the user's player state
+        /// Called every frame
         /// </summary>
-        /// <param name="userId">The player Id</param>
-        /// <returns>The player's state</returns>
-        public PlayerState GetUserPlayerState(int playerId)
+        private void Update()
         {
-            if (playerId < 0 || playerId > 1)
-            {
-                return null;
-            }
+            var player0HealthCards = this.PlayerStateManagerComponent.Player0State.HealthCards;
+            var player1HealthCards = this.PlayerStateManagerComponent.Player1State.HealthCards;
 
-            return this.PlayerStates[playerId];
+            // Check to see if both players has placed down health cards
+            if (this.CurrentPhase == GamePhaseEnum.Setup && player0HealthCards.Count > 0 && player1HealthCards.Count > 0)
+            {
+                this.StartGame();
+            }
         }
 
         /// <summary>
-        /// Gets the enemy's player state
+        /// Reveal the health cards to the player
         /// </summary>
-        /// <param name="playerId">Player Id</param>
-        /// <returns>Player state of the enemy</returns>
-        public PlayerState GetEnemyPlayerState(int playerId)
+        private void StartGame()
         {
-            if (playerId == 0)
-            {
-                return this.PlayerStates[1];
-            }
-            else
-            {
-                return this.PlayerStates[0];
-            }
+            // Compare health cards to see who goes first
+            var player0HealthCard = PlayerStateManager.CurrentInstance.Player0State.HealthCards.Last();
+            var player1HealthCard = PlayerStateManager.CurrentInstance.Player1State.HealthCards.Last();
+
+            this.CurrentPhase = GamePhaseEnum.Mulligan;
+            this.TurnNumber = 1;
+            this.CurrentPlayerId = player0HealthCard > player1HealthCard ? 0 : 1;
+
         }
     }
 }

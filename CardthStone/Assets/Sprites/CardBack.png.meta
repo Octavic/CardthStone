@@ -1,12 +1,14 @@
 fileFormatVersion: 2
 guid: f1c9587e4ca5e8a429b7f0682cf0584a
-timeCreated: 1492621276
+timeCreated: 1493336892
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
     21300000: CardBack_0
     21300002: CardBack_1
     21300004: CardBack_2
+    21300006: CardBack_3
+    21300008: CardBack_4
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -103,6 +105,32 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 320
+        y: 0
+        width: 160
+        height: 240
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: CardBack_3
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 160
+        height: 240
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: CardBack_4
+      rect:
+        serializedVersion: 2
+        x: 800
         y: 0
         width: 160
         height: 240
