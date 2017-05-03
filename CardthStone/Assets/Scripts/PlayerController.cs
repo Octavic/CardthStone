@@ -51,7 +51,7 @@ namespace Assets.Scripts
             get
             {
                 var gameControllerInstance = GameObject.FindGameObjectWithTag(Tags.GameController).GetComponent<PlayerStateManager>();
-                return gameControllerInstance.PlayerStates[(this.PlayerId + 1) % 2];
+                return gameControllerInstance.PlayerStates[(this.PlayerId + 1) % Settings.MaxPlayerCount];
             }
         }
 
@@ -115,7 +115,7 @@ namespace Assets.Scripts
                 return;
             }
 
-            GameController.CurrentInstance.EndCurrentTurn();
+            GameController.CurrentInstance.RpcEndCurrentTurn();
         }
 
         /// <summary>

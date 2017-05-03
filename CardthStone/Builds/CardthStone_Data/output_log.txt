@@ -19,14 +19,14 @@ Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\Car
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.086 seconds
+- Completed reload, in  0.129 seconds
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.373764 ms
+UnloadTime: 1.324560 ms
 Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox in NetworkManager Script CRC Check.
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
@@ -47,37 +47,24 @@ CRC Remote Dump SharedState : 0
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
+CRC Remote Dump GameController : 0
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.246921 ms
-NullReferenceException: Object reference not set to an instance of an object
-  at Assets.Scripts.Managers.TurnManager.Update () [0x00000] in <filename unknown>:0 
+UnloadTime: 0.230922 ms
+
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 737.
+Total: 0.595569 ms (FindLiveObjects: 0.041656 ms CreateObjectMapping: 0.021733 ms MarkObjects: 0.517387 ms  DeleteObjects: 0.007546 ms)
+
+RPC Function RpcOnStartTurn called on client.
  
-(Filename:  Line: -1)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 729.
-Total: 0.920068 ms (FindLiveObjects: 0.059164 ms CreateObjectMapping: 0.035015 ms MarkObjects: 0.801739 ms  DeleteObjects: 0.016904 ms)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at Assets.Scripts.Managers.TurnManager.Update () [0x00000] in <filename unknown>:0 
+RPC Function RpcOnStartTurn called on client.
  
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at Assets.Scripts.Managers.TurnManager.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at Assets.Scripts.Managers.TurnManager.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
-
-NullReferenceException: Object reference not set to an instance of an object
-  at Assets.Scripts.Managers.TurnManager.Update () [0x00000] in <filename unknown>:0 
- 
-(Filename:  Line: -1)
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 46a0 -> priority: 1 
-  Thread -> id: 3b4 -> priority: 1 
+  Thread -> id: 31a4 -> priority: 1 
+  Thread -> id: 25cc -> priority: 1 

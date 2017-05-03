@@ -144,7 +144,7 @@ namespace Assets.Scripts
         {
             get
             {
-                return 0.35f;
+                return 0.2f;
             }
         }
     }

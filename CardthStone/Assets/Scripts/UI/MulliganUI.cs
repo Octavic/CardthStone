@@ -6,16 +6,17 @@
 
 namespace Assets.Scripts.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using Managers;
+	using UnityEngine;
 
-    /// <summary>
-    /// The UI for mulligan
-    /// </summary>
-    public class MulliganUI : MonoBehaviour
+	/// <summary>
+	/// The UI for mulligan
+	/// </summary>
+	public class MulliganUI : MonoBehaviour
     {
         /// <summary>
         /// A list of card slots for the mulligan UI
@@ -44,15 +45,15 @@ namespace Assets.Scripts.UI
                 }
             }
 
-            // End the current turn
-            if (localPlayer.isServer)
-            {
-                GameController.CurrentInstance.EndCurrentTurn();
-            }
-            else
-            {
-                localPlayer.CmdEndCurrentTurn();
-            }
+			// End the current turn
+			if (localPlayer.isServer)
+			{
+				GameController.CurrentInstance.RpcEndCurrentTurn();
+			}
+			else
+			{
+				PlayerController.LocalPlayer.CmdEndCurrentTurn();
+			}
 
             this.gameObject.SetActive(false);
         }

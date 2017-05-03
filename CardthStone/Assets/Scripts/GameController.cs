@@ -50,7 +50,8 @@ namespace Assets.Scripts
         /// <summary>
         /// Called when the turn is over
         /// </summary>
-        public void EndCurrentTurn()
+		[ClientRpc]
+        public void RpcEndCurrentTurn()
         {
             this.TurnNumber++;
 
@@ -61,8 +62,10 @@ namespace Assets.Scripts
             }
             else
             {
-                this.CurrentPlayerId = (this.CurrentPlayerId + 1) % 2;
+                this.CurrentPlayerId = (this.CurrentPlayerId + 1) % Settings.MaxPlayerCount;
             }
+
+			this.RpcOnStartTurn();
         }
 
         /// <summary>
@@ -106,6 +109,20 @@ namespace Assets.Scripts
             this.TurnNumber = 1;
             this.CurrentPlayerId = player0HealthCard > player1HealthCard ? 0 : 1;
 
-        }
+			if (this.isServer)
+			{
+				this.RpcOnStartTurn();
+			}
+
+		}
+
+		/// <summary>
+		/// Calls the turn manager to start a new turn
+		/// </summary>
+		[ClientRpc]
+		private void RpcOnStartTurn()
+		{
+			TurnManager.CurrentInstance.OnTurnStart();
+		}
     }
 }

@@ -42,7 +42,7 @@ namespace Assets.Scripts.UI
 
             // Add the correct cards
             if (showCards)
-            {
+            { 
                 for (int i = 0; i < playerState.HealthCards.Count; i++)
                 {
                     var card = playerState.HealthCards[i];
