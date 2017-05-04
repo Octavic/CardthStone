@@ -62,18 +62,19 @@ namespace Assets.Scripts.States
             this.PlayerDrawDeck.RemoveAt(0);
             this.PlayerHand.Add(newCard);
 
-            Debug.Log("Player " + PlayerId + " has drawn a card: " + newCard.ToString());
+            //Debug.Log("Player " + PlayerId + " has drawn a card: " + newCard.ToString());
 
             this.RpcRenderPlayerHand();
 
         }
 
-        /// <summary>
-        /// Summons a new creature from the player's hand
-        /// </summary>
-        /// <param name="attackCard">The attack card</param>
-        /// <param name="defenseCard">The defense card</param>
-        public void SummonCreature(Card attackCard, Card defenseCard)
+		/// <summary>
+		/// Summons a new creature from the player's hand
+		/// </summary>
+		/// <param name="attackCard">The attack card</param>
+		/// <param name="defenseCard">The defense card</param>
+		/// <param name="ownerUserId">The user that summoned the creature</param>
+		public void SummonCreature(Card attackCard, Card defenseCard, int ownerUserId)
         {
             // Validate to see if the player have those cards in hand
             if (!this.PlayerHand.Contains(attackCard) || !this.PlayerHand.Contains(defenseCard))
@@ -86,7 +87,7 @@ namespace Assets.Scripts.States
             this.PlayerHand.Remove(attackCard);
             this.PlayerHand.Remove(defenseCard);
 
-            this.Creatures.Add(new Creature(attackCard, defenseCard));
+            this.Creatures.Add(new Creature(attackCard, defenseCard, ownerUserId));
             Debug.Log("Player " + PlayerId + " has summon creature with " + attackCard.ToString() + " and " + defenseCard.ToString());
 
             this.RpcRenderCreatureArea();

@@ -115,8 +115,11 @@ namespace Assets.Scripts
                 return;
             }
 
-            GameController.CurrentInstance.RpcEndCurrentTurn();
-        }
+			if (this.isServer)
+			{
+				GameController.CurrentInstance.RpcEndCurrentTurn();
+			}
+		}
 
         /// <summary>
         /// Calls the server to assign the initial health cards
@@ -129,15 +132,16 @@ namespace Assets.Scripts
             this.MyPlayerState.AssignInitialHealthCards(suits, numbers);
         }
 
-        /// <summary>
-        /// Calls the server to summon a creature
-        /// </summary>
-        /// <param name="attackCard">The attack card used to summon the creature</param>
-        /// <param name="defenseCard">The defense card used to summon the creature</param>
-        [Command]
-        public void CmdSummonCreature(Card attackCard, Card defenseCard)
+		/// <summary>
+		/// Calls the server to summon a creature
+		/// </summary>
+		/// <param name="attackCard">The attack card used to summon the creature</param>
+		/// <param name="defenseCard">The defense card used to summon the creature</param>
+		/// <param name="ownerUserId">The Id of the user who summoned the creature</param>
+		[Command]
+        public void CmdSummonCreature(Card attackCard, Card defenseCard, int ownerUserId)
         {
-            this.MyPlayerState.SummonCreature(attackCard, defenseCard);
+            this.MyPlayerState.SummonCreature(attackCard, defenseCard, ownerUserId);
         }
 
         /// <summary>

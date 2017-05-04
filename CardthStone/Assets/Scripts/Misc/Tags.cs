@@ -58,5 +58,13 @@ namespace Assets.Scripts
                 return "Player";
             }
         }
+
+		public static string Creature
+		{
+			get
+			{
+				return "Creature";
+			}
+		}
     }
 }

@@ -46,6 +46,11 @@ namespace Assets.Scripts
         /// </summary>
         public int DefenseBuff;
 
+		/// <summary>
+		/// The id of the user who owns the creature
+		/// </summary>
+		public int OwnerUserId;
+
         /// <summary>
         /// A state indicating whether the creature have summoning sickness or not. 
         /// Having summoning sickness means the creature cannot attack this turn
@@ -74,15 +79,17 @@ namespace Assets.Scripts
             }
         }
 
-        /// <summary>
-        /// Initializes a new instances of the <see cref="Creature"/> structure
-        /// </summary>
-        /// <param name="attackCard">The attack card</param>
-        /// <param name="defenseCard">The defense card</param>
-        public Creature(Card attackCard, Card defenseCard)
+		/// <summary>
+		/// Initializes a new instances of the <see cref="Creature"/> structure
+		/// </summary>
+		/// <param name="attackCard">The attack card</param>
+		/// <param name="defenseCard">The defense card</param>
+		/// <param name="ownerUserid">The user that summoned this creature</param>
+		public Creature(Card attackCard, Card defenseCard, int ownerUserid)
         {
             this.AttackCard = attackCard;
             this.DefenseCard =defenseCard;
+			this.OwnerUserId = ownerUserid;
 
             this.CurrentHealth = defenseCard.CardNumber > 10 ? 10 : defenseCard.CardNumber;
             this.AttackBuff = 0;
@@ -137,5 +144,27 @@ namespace Assets.Scripts
 
             this.CurrentHealth = this.TotalDefenseNumber;
         }
-    }
+
+		/// <summary>
+		/// Turns the creature to a string
+		/// </summary>
+		/// <returns>A string representing the creature</returns>
+		public override string ToString()
+		{
+			var builder = new StringBuilder();
+			builder.Append(this.TotalAttackNumber + "(" + this.AttackCard.CardSuit + ")/");
+			builder.Append(this.TotalDefenseNumber + "(" + this.DefenseCard.CardSuit + ") from player ");
+			builder.Append(this.OwnerUserId);
+			return builder.ToString();
+		}
+
+		/// <summary>
+		/// Gets the hash code
+		/// </summary>
+		/// <returns>The hash code</returns>
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+	}
 }

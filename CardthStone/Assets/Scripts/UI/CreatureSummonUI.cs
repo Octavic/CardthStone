@@ -67,7 +67,7 @@ namespace Assets.Scripts.UI
             this.CheckCreatureValibility();
             if (!this.SummonButton.interactable)
             {
-                Debug.Log("Something wrong, creature should not be able to be summoned at the moment");
+                Debug.Log("Something went wrong, creature should not be able to be summoned at the moment");
                 return;
             }
 
@@ -79,11 +79,11 @@ namespace Assets.Scripts.UI
             var localPlayer = PlayerController.LocalPlayer;
             if (localPlayer.isServer)
             {
-                PlayerController.LocalPlayer.MyPlayerState.SummonCreature(attackCard, defenseCard);
+                PlayerController.LocalPlayer.MyPlayerState.SummonCreature(attackCard, defenseCard, localPlayer.PlayerId);
             }
             else
             {
-                localPlayer.CmdSummonCreature(attackCard, defenseCard);
+                localPlayer.CmdSummonCreature(attackCard, defenseCard, localPlayer.PlayerId);
             }
 
             // All is done, close the summon window
