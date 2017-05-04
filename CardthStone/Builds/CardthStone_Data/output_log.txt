@@ -19,14 +19,14 @@ Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\Car
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.034 seconds
+- Completed reload, in  0.049 seconds
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.997708 ms
+UnloadTime: 1.432928 ms
 Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox in NetworkManager Script CRC Check.
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
@@ -52,10 +52,10 @@ CRC Remote Dump GameController : 0
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.266844 ms
+UnloadTime: 0.294917 ms
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 737.
-Total: 0.983459 ms (FindLiveObjects: 0.057655 ms CreateObjectMapping: 0.025658 ms MarkObjects: 0.877808 ms  DeleteObjects: 0.012678 ms)
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 739.
+Total: 0.640546 ms (FindLiveObjects: 0.035921 ms CreateObjectMapping: 0.031695 ms MarkObjects: 0.558742 ms  DeleteObjects: 0.007546 ms)
 
 RPC Function RpcOnStartTurn called on client.
  
@@ -70,5 +70,5 @@ RPC Function RpcOnStartTurn called on client.
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: 26d8 -> priority: 1 
-  Thread -> id: 25d0 -> priority: 1 
+  Thread -> id: 45f4 -> priority: 1 
+  Thread -> id: 41a0 -> priority: 1 

@@ -16,10 +16,15 @@ namespace Assets.Scripts
     /// </summary>
     public struct Creature
     {
-        /// <summary>
-        /// Gets or sets the current health of the creature
-        /// </summary>
-        public int CurrentHealth;
+		/// <summary>
+		/// Id of the creature
+		/// </summary>
+		public int CreatureId;
+
+		/// <summary>
+		/// Gets or sets the current health of the creature
+		/// </summary>
+		public int CurrentHealth;
 
         /// <summary>
         /// Gets or sets a state indicating whether the creature is tapped or not
@@ -80,6 +85,11 @@ namespace Assets.Scripts
         }
 
 		/// <summary>
+		/// The id of the next creature
+		/// </summary>
+		private static int _nextCreatureId = 1;
+
+		/// <summary>
 		/// Initializes a new instances of the <see cref="Creature"/> structure
 		/// </summary>
 		/// <param name="attackCard">The attack card</param>
@@ -87,15 +97,21 @@ namespace Assets.Scripts
 		/// <param name="ownerUserid">The user that summoned this creature</param>
 		public Creature(Card attackCard, Card defenseCard, int ownerUserid)
         {
+			// Assign basic variables
             this.AttackCard = attackCard;
             this.DefenseCard =defenseCard;
 			this.OwnerUserId = ownerUserid;
 
+			// Calculate other variables
             this.CurrentHealth = defenseCard.CardNumber > 10 ? 10 : defenseCard.CardNumber;
             this.AttackBuff = 0;
             this.DefenseBuff = 0;
             this.IsTapped = false;
             this.HaveSummoningSickness = true;
+
+			// Assign creature Id
+			this.CreatureId = Creature._nextCreatureId;
+			Creature._nextCreatureId ++;
         }
 
         /// <summary>
@@ -152,8 +168,9 @@ namespace Assets.Scripts
 		public override string ToString()
 		{
 			var builder = new StringBuilder();
+			builder.Append("#" + this.CreatureId + " :");
 			builder.Append(this.TotalAttackNumber + "(" + this.AttackCard.CardSuit + ")/");
-			builder.Append(this.TotalDefenseNumber + "(" + this.DefenseCard.CardSuit + ") from player ");
+			builder.Append(this.TotalDefenseNumber + "(" + this.DefenseCard.CardSuit + ") by P");
 			builder.Append(this.OwnerUserId);
 			return builder.ToString();
 		}

@@ -87,10 +87,14 @@ namespace Assets.Scripts.States
             this.PlayerHand.Remove(attackCard);
             this.PlayerHand.Remove(defenseCard);
 
-            this.Creatures.Add(new Creature(attackCard, defenseCard, ownerUserId));
-            Debug.Log("Player " + PlayerId + " has summon creature with " + attackCard.ToString() + " and " + defenseCard.ToString());
+			var newCreature = new Creature(attackCard, defenseCard, ownerUserId);
 
-            this.RpcRenderCreatureArea();
+			this.Creatures.Add(newCreature);
+            //Debug.Log("Player " + PlayerId + " has summon creature with " + attackCard.ToString() + " and " + defenseCard.ToString());
+			Debug.Log(newCreature.ToString());
+
+
+			this.RpcRenderCreatureArea();
             this.RpcRenderPlayerHand();
         }
 
