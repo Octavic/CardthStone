@@ -38,12 +38,27 @@ namespace Assets.Scripts
         /// The defense number
         /// </summary>
         public TextMesh DefenseNumberMesh;
-        #endregion
 
-        /// <summary>
-        /// The creature that this creature behavior is representing
-        /// </summary>
-        public Creature TargetCreature;
+		/// <summary>
+		/// The boarder that shows up when a creature is selected
+		/// </summary>
+		public GameObject SelectBoarder;
+		#endregion
+
+		/// <summary>
+		/// A list of all creatures by their creature Id
+		/// </summary>
+		public static IDictionary<int, CreatureBehavior> Creatures = new Dictionary<int, CreatureBehavior>();
+
+		/// <summary>
+		/// The currently selected creature
+		/// </summary>
+		public static CreatureBehavior CurrentlySelected;
+
+		/// <summary>
+		/// The creature that this creature behavior is representing
+		/// </summary>
+		public Creature TargetCreature;
 
         /// <summary>
         /// Gets a state indicating whether the creature can attack whatever it desires
@@ -65,6 +80,11 @@ namespace Assets.Scripts
         /// </summary>
         private static ColorManager _colorManager;
 
+		/// <summary>
+		/// If this creature is selected
+		/// </summary>
+		private bool _isSelected;
+
         /// <summary>
         /// Spawns the creature
         /// </summary>
@@ -74,7 +94,43 @@ namespace Assets.Scripts
             // Add the cards to the card list
             this.TargetCreature = targetCreature;
             this.UpdateIconAndNumber();
+
+			// Add the newly created creature to the list
+			CreatureBehavior.Creatures[targetCreature.CreatureId] = this; 
         }
+
+		/// <summary>
+		/// Called when a user clicks on the creature
+		/// </summary>
+		public void OnUserClick()
+		{
+			if (this.TargetCreature.OwnerUserId == PlayerController.LocalPlayer.PlayerId)
+			{
+				this._isSelected = !this._isSelected;
+
+				// Pops the new selected card out
+				this.SelectBoarder.SetActive(this._isSelected);
+
+				// Unselect the current card
+				if (CreatureBehavior.CurrentlySelected != null)
+				{
+					CreatureBehavior.CurrentlySelected.SelectBoarder.SetActive(false);
+
+					if (CreatureBehavior.CurrentlySelected == this)
+					{
+						CreatureBehavior.CurrentlySelected = null;
+					}
+					else
+					{
+						CreatureBehavior.CurrentlySelected = this;
+					}
+				}
+				else
+				{
+					CreatureBehavior.CurrentlySelected = this;
+				}
+			}
+		}
 
         /// <summary>
         /// Generates the icon and number for attack/defense
@@ -117,6 +173,7 @@ namespace Assets.Scripts
         {
             this.TargetCreature.IsTapped = false;
             this.TargetCreature.HaveSummoningSickness = true;
+			this._isSelected = false;
         }
     }
 }

@@ -17,12 +17,7 @@ namespace Assets.Scripts.Managers
 		/// Gets the current instance
 		/// </summary>
 		public static IntentManager CurrentInstance { get; private set; }
-
-		/// <summary>
-		/// Gets the current intent
-		/// </summary>
-		public IntentEnum CurrentIntent { get; private set; }
-
+		
 		/// <summary>
 		/// Called once when a new instance of the class is initialized
 		/// </summary>
@@ -31,13 +26,6 @@ namespace Assets.Scripts.Managers
 			IntentManager.CurrentInstance = this;
 		}
 
-		/// <summary>
-		/// Adds a health card to the target player
-		/// </summary>
-		/// <param name="targetPlayerId">The target player to add health to</param>
-		public void AddHealthCard(int targetPlayerId)
-		{
-
-		}
+		
 	}
 }

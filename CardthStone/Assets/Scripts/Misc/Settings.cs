@@ -147,5 +147,16 @@ namespace Assets.Scripts
                 return 0.2f;
             }
         }
+
+		/// <summary>
+		/// Gets the starting index number for creature ids
+		/// </summary>
+		public static int CreatureStartingId
+		{
+			get
+			{
+				return 2;
+			}
+		}
     }
 }

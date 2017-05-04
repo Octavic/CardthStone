@@ -87,7 +87,7 @@ namespace Assets.Scripts
 		/// <summary>
 		/// The id of the next creature
 		/// </summary>
-		private static int _nextCreatureId = 1;
+		private static int _nextCreatureId = Settings.CreatureStartingId;
 
 		/// <summary>
 		/// Initializes a new instances of the <see cref="Creature"/> structure
