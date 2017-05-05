@@ -13,7 +13,7 @@ namespace Assets.Scripts
     /// </summary>
     public struct Card
     {
-        /// <summary>
+        /// <summary>0
         /// Gets the suit of the card
         /// </summary>
         public CardSuitEnum CardSuit;
@@ -117,6 +117,7 @@ namespace Assets.Scripts
         public override bool Equals(object obj)
         {
             if (obj is Card)
+
             {
                 return this == (Card)obj;
             }

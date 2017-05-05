@@ -4,7 +4,7 @@
 //  </copyright>
 //--------------------------------------------------------------------------------------------------------------------
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Intent
 {
 	/// <summary>
 	/// All possible intents
@@ -16,6 +16,8 @@ namespace Assets.Scripts
 		DirectDamage,
 		PlaceHeathCard,
 		BuffCreatureAttack,
-		BuffCreatureDefense
+		BuffCreatureDefense,
+		Counter,
+		AcceptAction
 	}
 }

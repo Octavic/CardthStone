@@ -19,14 +19,14 @@ Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\Car
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.PlaymodeTestsRunner.dll into Unity Child Domain
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll (this message is harmless)
 Loading D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\UnityEngine.Analytics.dll into Unity Child Domain
-- Completed reload, in  0.052 seconds
+- Completed reload, in  0.102 seconds
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: D:\ProgrammingStuff\GitHub\CardthStone\CardthStone\Builds\CardthStone_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3840x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.515336 ms
+UnloadTime: 1.278376 ms
 Network configuration mismatch detected. The number of networked scripts on the client does not match the number of networked scripts on the server. This could be caused by lazy loading of scripts on the client. This warning can be disabled by the checkbox in NetworkManager Script CRC Check.
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
@@ -52,19 +52,22 @@ CRC Remote Dump GameController : 0
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
 Unloading 4 Unused Serialized files (Serialized files now loaded: 0)
-UnloadTime: 0.265032 ms
+UnloadTime: 0.194095 ms
 
-Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 744.
-Total: 0.833434 ms (FindLiveObjects: 0.054636 ms CreateObjectMapping: 0.031997 ms MarkObjects: 0.729595 ms  DeleteObjects: 0.009961 ms)
+Unloading 3 unused Assets to reduce memory usage. Loaded Objects now: 770.
+Total: 0.562364 ms (FindLiveObjects: 0.034713 ms CreateObjectMapping: 0.021733 ms MarkObjects: 0.493540 ms  DeleteObjects: 0.006640 ms)
 
-RPC Function RpcOnStartTurn called on client.
+Log: connection {1} has been disconnected by timeout; address {::ffff:127.0.0.1:7777}
+Unloading 2 Unused Serialized files (Serialized files now loaded: 0)
+ClientDisconnected due to error: Timeout
  
 (Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
 
-RPC Function RpcOnStartTurn called on client.
- 
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+UnloadTime: 3.138134 ms
+
+Unloading 28 unused Assets to reduce memory usage. Loaded Objects now: 463.
+Total: 0.406001 ms (FindLiveObjects: 0.018413 ms CreateObjectMapping: 0.017809 ms MarkObjects: 0.315443 ms  DeleteObjects: 0.054032 ms)
 
 Setting up 2 worker threads for Enlighten.
-  Thread -> id: f70 -> priority: 1 
-  Thread -> id: 1cf8 -> priority: 1 
+  Thread -> id: 15c8 -> priority: 1 
+  Thread -> id: 49f8 -> priority: 1 

@@ -1,4 +1,5 @@
-﻿//--------------------------------------------------------------------------------------------------------------------
+﻿
+//--------------------------------------------------------------------------------------------------------------------
 //  <copyright file="TurnManager.cs" company="Yifei Xu">
 //    Copyright (c) Yifei Xu.  All rights reserved.
 //  </copyright>
@@ -12,6 +13,7 @@ namespace Assets.Scripts.Managers
     using System.Text;
     using UnityEngine;
     using UnityEngine.UI;
+	using Intent;
 
 	/// <summary>
 	/// Manages the player's turns
@@ -80,15 +82,25 @@ namespace Assets.Scripts.Managers
             }
             else if (gameController.CurrentPhase == GamePhaseEnum.Normal)
             {
-				// Set button active state
-				if (gameController.CurrentPlayerId == PlayerController.LocalPlayer.PlayerId)
+				var localPlayer = PlayerController.LocalPlayer;
+
+				// Check intent manager to see if it's this current user's counter turn
+				if (IntentManager.CurrentInstance.ActionStack.Count > 0)
 				{
-					// Activate buttons
+					var lastAction = IntentManager.CurrentInstance.ActionStack.Peek();
+					var isCurrentPlayerCountering = lastAction.IssuingPlayerId != localPlayer.PlayerId;
+					this.SetAllButtonsState(this.SharedActionButtons, isCurrentPlayerCountering);
+					this.SetAllButtonsState(this.CounterActionOnlyButtons, isCurrentPlayerCountering);
+					this.SetAllButtonsState(this.NormalActionOnlyButtons, !isCurrentPlayerCountering);
+				}
+				else if (gameController.CurrentPlayerId == localPlayer.PlayerId)
+				{
+					// No actions in stack, and it's current player's turn. Go ahead
 					this.SetAllButtonsState(this.SharedActionButtons, true);
 					this.SetAllButtonsState(this.NormalActionOnlyButtons, true);
+					this.SetAllButtonsState(this.CounterActionOnlyButtons, false);
 
 					// Draw cards. if it's turn one, only draw one card
-					var localPlayer = PlayerController.LocalPlayer;
 					if (gameController.TurnNumber == 1)
 					{
 						localPlayer.CmdDrawCard();
@@ -101,9 +113,11 @@ namespace Assets.Scripts.Managers
                 }
                 else
                 {
+					// Not current player's normal or counter turn, no buttons can be used
                     this.SetAllButtonsState(this.SharedActionButtons, false);
                     this.SetAllButtonsState(this.NormalActionOnlyButtons, false);
-                }
+					this.SetAllButtonsState(this.CounterActionOnlyButtons, false);
+				}
             }
         }
 

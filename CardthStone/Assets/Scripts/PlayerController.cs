@@ -6,20 +6,21 @@
 
 namespace Assets.Scripts
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
-    using UnityEngine.Networking;
-    using UnityEngine.UI;
-    using States;
-    using Managers;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using UnityEngine;
+	using UnityEngine.Networking;
+	using UnityEngine.UI;
+	using States;
+	using Managers;
+	using Intent;
 
-    /// <summary>
-    /// Controls the player behavior
-    /// </summary>
-    public class PlayerController : NetworkBehaviour
+	/// <summary>
+	/// Controls the player behavior
+	/// </summary>
+	public class PlayerController : NetworkBehaviour
     {
         /// <summary>
         /// The player Id for the current player
@@ -153,5 +154,47 @@ namespace Assets.Scripts
         {
             this.MyPlayerState.MulliganCard(targetCard);
         }
-    }
+
+		/// <summary>
+		/// Commits a normal card use on a creature or health card
+		/// </summary>
+		/// <param name="intent">Target intent</param>
+		/// <param name="issuingPlayerId">The player who issued this intent</param>
+		/// <param name="card">the card involved, null if creature combat</param>
+		/// <param name="sourceId">the attacking creature, if applicable</param>
+		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
+		[Command]
+		public void CmdCommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		{
+			this.CommitNormalCardUse(intent, issuingPlayerId, card, sourceId, targetId);
+		}
+
+		/// <summary>
+		/// Commits a normal card use on a creature or health card
+		/// </summary>
+		/// <param name="intent">Target intent</param>
+		/// <param name="issuingPlayerId">The player who issued this intent</param>
+		/// <param name="card">the card involved, null if creature combat</param>
+		/// <param name="sourceId">the attacking creature, if applicable</param>
+		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
+		[ClientRpc]
+		public void RpcCommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		{
+			this.CommitNormalCardUse(intent, issuingPlayerId, card, sourceId, targetId);
+		}
+
+		/// <summary>
+		/// Commits a normal card use on a creature or health card
+		/// </summary>
+		/// <param name="intent">Target intent</param>
+		/// <param name="issuingPlayerId">The player who issued this intent</param>
+		/// <param name="card">the card involved, null if creature combat</param>
+		/// <param name="sourceId">the attacking creature, if applicable</param>
+		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
+		private void CommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		{
+			IntentManager.CurrentInstance.AddIntent(intent, issuingPlayerId, card, sourceId, targetId);
+			TurnManager.CurrentInstance.OnTurnStart();
+		}
+	}
 }

@@ -155,7 +155,7 @@ namespace Assets.Scripts
 		{
 			get
 			{
-				return 2;
+				return Settings.MaxPlayerCount;
 			}
 		}
     }

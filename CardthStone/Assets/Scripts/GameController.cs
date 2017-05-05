@@ -32,19 +32,16 @@ namespace Assets.Scripts
         /// <summary>
         /// Gets or sets the current turn number. -1 if the game have not started yet
         /// </summary>
-        [SyncVar]
         public int TurnNumber;
 
         /// <summary>
         /// Gets the current phase of game
         /// </summary>
-        [SyncVar]
         public GamePhaseEnum CurrentPhase;
 
         /// <summary>
         /// Gets Id of the player who is in charge of the current turn
         /// </summary>
-        [SyncVar]
         public int CurrentPlayerId;
 
         /// <summary>
@@ -65,8 +62,16 @@ namespace Assets.Scripts
                 this.CurrentPlayerId = (this.CurrentPlayerId + 1) % Settings.MaxPlayerCount;
             }
 
-			this.RpcOnStartTurn();
-        }
+			// Trigger turn manager new turn 
+			if (this.isServer)
+			{
+				this.RpcOnStartTurn();
+			}
+			else
+			{
+				TurnManager.CurrentInstance.OnTurnStart();
+			}
+		}
 
         /// <summary>
         /// Used for initialization
@@ -113,7 +118,10 @@ namespace Assets.Scripts
 			{
 				this.RpcOnStartTurn();
 			}
-
+			else
+			{
+				TurnManager.CurrentInstance.OnTurnStart();
+			}
 		}
 
 		/// <summary>

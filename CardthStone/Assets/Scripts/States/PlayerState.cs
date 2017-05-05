@@ -6,18 +6,20 @@
 
 namespace Assets.Scripts.States
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
-    using UnityEngine.Networking;
-    using Managers;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using UnityEngine;
+	using UnityEngine.Networking;
+	using Managers;
+	using UI;
+	using Intent;
 
-    /// <summary>
-    /// A collection of all data relating to a player state
-    /// </summary>
-    public class PlayerState : NetworkBehaviour
+	/// <summary>
+	/// A collection of all data relating to a player state
+	/// </summary>
+	public class PlayerState : NetworkBehaviour
     {
         /// <summary>
         /// Gets the player id for which this player state represents
@@ -93,7 +95,6 @@ namespace Assets.Scripts.States
             //Debug.Log("Player " + PlayerId + " has summon creature with " + attackCard.ToString() + " and " + defenseCard.ToString());
 			Debug.Log(newCreature.ToString());
 
-
 			this.RpcRenderCreatureArea();
             this.RpcRenderPlayerHand();
         }
@@ -140,7 +141,7 @@ namespace Assets.Scripts.States
                 this.RpcRenderPlayerHand();
             }
         }
-
+		
         #region RPC render functions
         /// <summary>
         /// Re-renders the player's creature area on every client
