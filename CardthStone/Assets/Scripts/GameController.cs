@@ -44,33 +44,33 @@ namespace Assets.Scripts
         /// </summary>
         public int CurrentPlayerId;
 
+		/// <summary>
+		/// Ends the current turn
+		/// </summary>
+		public void EndCurrentTurn()
+		{
+			this.TurnNumber++;
+
+			if (this.CurrentPhase == GamePhaseEnum.Mulligan && this.TurnNumber >= 3)
+			{
+				this.TurnNumber = 1;
+				this.CurrentPhase = GamePhaseEnum.Normal;
+			}
+			else
+			{
+				this.CurrentPlayerId = (this.CurrentPlayerId + 1) % Settings.MaxPlayerCount;
+			}
+
+			TurnManager.CurrentInstance.OnTurnStart();
+		}
+
         /// <summary>
         /// Called when the turn is over
         /// </summary>
 		[ClientRpc]
         public void RpcEndCurrentTurn()
         {
-            this.TurnNumber++;
-
-            if (this.CurrentPhase == GamePhaseEnum.Mulligan && this.TurnNumber >= 3)
-            {
-                this.TurnNumber = 1;
-                this.CurrentPhase = GamePhaseEnum.Normal;
-            }
-            else
-            {
-                this.CurrentPlayerId = (this.CurrentPlayerId + 1) % Settings.MaxPlayerCount;
-            }
-
-			// Trigger turn manager new turn 
-			if (this.isServer)
-			{
-				this.RpcOnStartTurn();
-			}
-			else
-			{
-				TurnManager.CurrentInstance.OnTurnStart();
-			}
+			this.EndCurrentTurn();
 		}
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace Assets.Scripts
 			}
 			else
 			{
-				TurnManager.CurrentInstance.OnTurnStart();
+				TurnManager.CurrentInstance.Render();
 			}
 		}
 

@@ -6,17 +6,18 @@
 
 namespace Assets.Scripts
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
-    using Managers;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using UnityEngine;
+	using Managers;
+	using Intent;
 
-    /// <summary>
-    /// Describes the behavior of a creature
-    /// </summary>
-    public class CreatureBehavior : MonoBehaviour
+	/// <summary>
+	/// Describes the behavior of a creature
+	/// </summary>
+	public class CreatureBehavior : MonoBehaviour
     {
         #region Unity editor elements
         /// <summary>
@@ -104,32 +105,32 @@ namespace Assets.Scripts
 		/// </summary>
 		public void OnUserClick()
 		{
-			if (this.TargetCreature.OwnerUserId == PlayerController.LocalPlayer.PlayerId)
+			this._isSelected = !this._isSelected;
+
+			// Pops the new selected card out
+			this.SelectBoarder.SetActive(this._isSelected);
+
+			// Unselect the current card
+			if (CreatureBehavior.CurrentlySelected != null)
 			{
-				this._isSelected = !this._isSelected;
+				CreatureBehavior.CurrentlySelected.SelectBoarder.SetActive(false);
 
-				// Pops the new selected card out
-				this.SelectBoarder.SetActive(this._isSelected);
-
-				// Unselect the current card
-				if (CreatureBehavior.CurrentlySelected != null)
+				if (CreatureBehavior.CurrentlySelected == this)
 				{
-					CreatureBehavior.CurrentlySelected.SelectBoarder.SetActive(false);
-
-					if (CreatureBehavior.CurrentlySelected == this)
-					{
-						CreatureBehavior.CurrentlySelected = null;
-					}
-					else
-					{
-						CreatureBehavior.CurrentlySelected = this;
-					}
+					CreatureBehavior.CurrentlySelected = null;
 				}
 				else
 				{
 					CreatureBehavior.CurrentlySelected = this;
 				}
 			}
+			else
+			{
+				CreatureBehavior.CurrentlySelected = this;
+			}
+
+			// Update the intent manager
+			IntentManager.CurrentInstance.Render();
 		}
 
         /// <summary>
@@ -154,8 +155,8 @@ namespace Assets.Scripts
             this.CanTargetBlock = Helpers.SuitToColor(baseDefenseCard.CardSuit) == CardColorEnum.Red;
 
             // Assign the suit sprite
-            this.AttackSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.AttackCard.CardSuit];
-            this.DefenseSuitRenderer.sprite = _spriteManager.SuitSprites[(int)this.TargetCreature.DefenseCard.CardSuit];
+            this.AttackSuitRenderer.sprite = _spriteManager.SuitIconSprites[(int)this.TargetCreature.AttackCard.CardSuit];
+            this.DefenseSuitRenderer.sprite = _spriteManager.SuitIconSprites[(int)this.TargetCreature.DefenseCard.CardSuit];
 
             // Assign the number text
             this.AttackNumberMesh.text = TargetCreature.TotalAttackNumber.ToString();

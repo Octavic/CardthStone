@@ -155,6 +155,7 @@ namespace Assets.Scripts
             this.MyPlayerState.MulliganCard(targetCard);
         }
 
+		#region Normal card use
 		/// <summary>
 		/// Commits a normal card use on a creature or health card
 		/// </summary>
@@ -194,7 +195,39 @@ namespace Assets.Scripts
 		private void CommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
 		{
 			IntentManager.CurrentInstance.AddIntent(intent, issuingPlayerId, card, sourceId, targetId);
-			TurnManager.CurrentInstance.OnTurnStart();
+			TurnManager.CurrentInstance.Render();
 		}
+		#endregion
+
+		#region Pass turn
+		/// <summary>
+		/// Passes the turn from server side
+		/// </summary>
+		/// <param name="issuingPlayerId">The issuing player</param>
+		[Command]
+		public void CmdPassTurn(int issuingPlayerId)
+		{
+			this.PassTurn(issuingPlayerId);
+		}
+
+		/// <summary>
+		/// Passes the turn from server side
+		/// </summary>
+		/// <param name="issuingPlayerId">The issuing player</param>
+		[ClientRpc]
+		public void RpcPassTurn(int issuingPlayerId)
+		{
+			this.PassTurn(issuingPlayerId);
+		}
+
+		/// <summary>
+		/// Passes the current turn
+		/// </summary>
+		/// <param name="issuingPlayerId">The issuing player</param>
+		private void PassTurn(int issuingPlayerId)
+		{
+			IntentManager.CurrentInstance.AddIntent(IntentEnum.PassTurn, issuingPlayerId, new Card(), -1, -1);
+		}
+		#endregion 
 	}
 }

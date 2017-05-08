@@ -20,12 +20,22 @@ namespace Assets.Scripts.Managers
         /// <summary>
         /// A list of suit sprites to be used as icon
         /// </summary>
-        public List<Sprite> SuitSprites;
+        public List<Sprite> SuitIconSprites;
 
         /// <summary>
         /// A list of possible card backs
         /// </summary>
         public List<Sprite> CardBacks;
+
+		/// <summary>
+		/// A list of suit sprites that appears on the card
+		/// </summary>
+		public List<Sprite> SuitDoubleSprites;
+
+		/// <summary>
+		/// A list of card number sprites that appears on the card
+		/// </summary>
+		public List<Sprite> CardNumberSprites;
 
         /// <summary>
         /// Gets the current instance

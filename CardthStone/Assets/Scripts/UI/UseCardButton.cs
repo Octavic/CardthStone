@@ -11,6 +11,7 @@ namespace Assets.Scripts.UI
 	using System.Linq;
 	using System.Text;
 	using Intent;
+	using Managers;
 	using UnityEngine;
 
 	/// <summary>
@@ -71,6 +72,8 @@ namespace Assets.Scripts.UI
 				{
 					localPlayer.CmdCommitNormalCardUse(intent, localPlayer.PlayerId, card.PokerCard, -1, creature.TargetCreature.CreatureId);
 				}
+
+				TurnManager.CurrentInstance.Render();
 			}
 		}
 	}

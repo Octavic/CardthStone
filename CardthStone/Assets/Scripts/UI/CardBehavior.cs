@@ -6,18 +6,19 @@
 
 namespace Assets.Scripts.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
-    using UnityEngine.UI;
-    using Managers;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using UnityEngine;
+	using UnityEngine.UI;
+	using Managers;
+	using Intent;
 
-    /// <summary>
-    /// Describes the behavior of a card
-    /// </summary>
-    public class CardBehavior : MonoBehaviour
+	/// <summary>
+	/// Describes the behavior of a card
+	/// </summary>
+	public class CardBehavior : MonoBehaviour
     {
         /// <summary>
         /// The poker card that this card is representing
@@ -85,6 +86,9 @@ namespace Assets.Scripts.UI
             {
                 CardBehavior.CurrentlySelected = this;
             }
+
+			// Update intent manager
+			IntentManager.CurrentInstance.Render();
         }
 
         /// <summary>

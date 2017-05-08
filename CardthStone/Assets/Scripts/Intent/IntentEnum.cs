@@ -11,13 +11,12 @@ namespace Assets.Scripts.Intent
 	/// </summary>
 	public enum IntentEnum
 	{
-		None,
 		CreatureAttack,
 		DirectDamage,
 		PlaceHeathCard,
 		BuffCreatureAttack,
 		BuffCreatureDefense,
 		Counter,
-		AcceptAction
+		PassTurn
 	}
 }

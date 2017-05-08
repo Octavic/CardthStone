@@ -108,7 +108,7 @@ namespace Assets.Scripts
         /// <summary>
         /// The health assign UI final position
         /// </summary>
-        private static Vector2 _healthAssignUIFinalPosition = new Vector2(642, 116);
+        private static Vector2 _healthAssignUIFinalPosition = new Vector2(570, 116);
 
         /// <summary>
         /// Gets the final position of the health assign UI
@@ -124,7 +124,7 @@ namespace Assets.Scripts
         /// <summary>
         /// The mulligan UI final position
         /// </summary>
-        private static Vector2 _mulliganUIFinalPosition = new Vector2(585, 68);
+        private static Vector2 _mulliganUIFinalPosition = new Vector2(515, 68);
 
         /// <summary>
         /// Gets the final position of the mulligan UI;

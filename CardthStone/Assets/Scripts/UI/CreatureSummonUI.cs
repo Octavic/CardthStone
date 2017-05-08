@@ -42,6 +42,7 @@ namespace Assets.Scripts.UI
         private void Start()
         {
             this.SummonButton.interactable = false;
+			this.gameObject.SetActive(false);
         }
         
         /// <summary>

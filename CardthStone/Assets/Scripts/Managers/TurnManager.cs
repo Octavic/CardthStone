@@ -26,19 +26,9 @@ namespace Assets.Scripts.Managers
 		public Movable MulliganUI;
 
 		/// <summary>
-		/// A list of shared actions that can be used in both counter turn and normal turn
-		/// </summary>
-		public List<Button> SharedActionButtons;
-
-		/// <summary>
 		/// A list of buttons that can only be used during your own normal turn
 		/// </summary>
 		public List<Button> NormalActionOnlyButtons;
-
-		/// <summary>
-		/// A list of buttons that can only be used when you are countering during someone else's turn
-		/// </summary>
-		public List<Button> CounterActionOnlyButtons;
 
 		/// <summary>
 		/// Gets the current instance of the turn manager
@@ -58,80 +48,99 @@ namespace Assets.Scripts.Managers
         /// </summary>
         private void Start()
         {
-            this.SetAllButtonsState(this.SharedActionButtons, false);
-            this.SetAllButtonsState(this.NormalActionOnlyButtons, false);
-            this.SetAllButtonsState(this.CounterActionOnlyButtons, false);
+            this.SetAllButtonInteractState(this.NormalActionOnlyButtons, false);
 
 			TurnManager.CurrentInstance = this;
         }
 
+		/// <summary>
+		/// Called when a new turn starts
+		/// </summary>
+		public void OnTurnStart()
+		{
+			var gameController = GameController.CurrentInstance;
+			var localPlayer = PlayerController.LocalPlayer;
+
+			// Draw cards if it's the beginning of current player's normal turn. if it's turn one, only draw one card
+			if (gameController.CurrentPhase == GamePhaseEnum.Normal && gameController.CurrentPlayerId == localPlayer.PlayerId)
+			{
+				if (gameController.TurnNumber == 1)
+				{
+					localPlayer.CmdDrawCard();
+				}
+				else
+				{
+					localPlayer.CmdDrawCard();
+					localPlayer.CmdDrawCard();
+				}
+			}
+
+			// Renders the show
+			this.Render();
+		}
+
         /// <summary>
         /// Called once per frame
         /// </summary>
-        public void OnTurnStart()
+        public void Render()
         {
             var gameController = GameController.CurrentInstance;
-			
+			var localPlayer = PlayerController.LocalPlayer;
+
 			// Check current phase. If mulligan, pull up mulligan UI
-            if (gameController.CurrentPhase == GamePhaseEnum.Mulligan)
+			if (gameController.CurrentPhase == GamePhaseEnum.Mulligan)
             {
-                if (gameController.CurrentPlayerId == PlayerController.LocalPlayer.PlayerId)
+                if (gameController.CurrentPlayerId == localPlayer.PlayerId)
                 {
                     this.MulliganUI.MoveToLocalPositioin(Settings.MulliganUIFinalPosition, Settings.UIMovementDuration);
                 }
             }
-            else if (gameController.CurrentPhase == GamePhaseEnum.Normal)
+			// Normal turn
+            else
             {
-				var localPlayer = PlayerController.LocalPlayer;
-
-				// Check intent manager to see if it's this current user's counter turn
+				// Check intent manager to see if it's this current user's turn for counter action
 				if (IntentManager.CurrentInstance.ActionStack.Count > 0)
 				{
-					var lastAction = IntentManager.CurrentInstance.ActionStack.Peek();
-					var isCurrentPlayerCountering = lastAction.IssuingPlayerId != localPlayer.PlayerId;
-					this.SetAllButtonsState(this.SharedActionButtons, isCurrentPlayerCountering);
-					this.SetAllButtonsState(this.CounterActionOnlyButtons, isCurrentPlayerCountering);
-					this.SetAllButtonsState(this.NormalActionOnlyButtons, !isCurrentPlayerCountering);
+					// Counter actions are happening, no normal action allowed
+					this.SetAllButtonInteractState(this.NormalActionOnlyButtons, false);
 				}
 				else if (gameController.CurrentPlayerId == localPlayer.PlayerId)
 				{
 					// No actions in stack, and it's current player's turn. Go ahead
-					this.SetAllButtonsState(this.SharedActionButtons, true);
-					this.SetAllButtonsState(this.NormalActionOnlyButtons, true);
-					this.SetAllButtonsState(this.CounterActionOnlyButtons, false);
-
-					// Draw cards. if it's turn one, only draw one card
-					if (gameController.TurnNumber == 1)
-					{
-						localPlayer.CmdDrawCard();
-					}
-					else
-					{
-						localPlayer.CmdDrawCard();
-						localPlayer.CmdDrawCard();
-					}
-                }
+					this.SetAllButtonInteractState(this.NormalActionOnlyButtons, true);
+				}
                 else
                 {
 					// Not current player's normal or counter turn, no buttons can be used
-                    this.SetAllButtonsState(this.SharedActionButtons, false);
-                    this.SetAllButtonsState(this.NormalActionOnlyButtons, false);
-					this.SetAllButtonsState(this.CounterActionOnlyButtons, false);
+                    this.SetAllButtonInteractState(this.NormalActionOnlyButtons, false);
 				}
             }
         }
 
-        /// <summary>
-        /// Loops through and sets the interactive state of every button
-        /// </summary>
-        /// <param name="buttons">List of buttons</param>
-        /// <param name="desiredState">What state to set it to</param>
-        private void SetAllButtonsState(IList<Button> buttons, bool desiredState)
+		/// <summary>
+		/// Loops through and sets the interactive state of every button
+		/// </summary>
+		/// <param name="buttons">List of buttons</param>
+		/// <param name="desiredState">What state to set it to</param>
+		private void SetAllButtonInteractState(IList<Button> buttons, bool desiredState)
         {
-            foreach (var button in buttons)
-            {
-                button.interactable = desiredState;
-            }
-        }
+			foreach (var button in buttons)
+			{
+				button.interactable = desiredState;
+			}
+		}
+
+		/// <summary>
+		/// Loops through and sets the active state of every button
+		/// </summary>
+		/// <param name="buttons">List of buttons</param>
+		/// <param name="desiredState">What state to set it to</param>
+		private void SetAllButtonActiveState(IList<Button> buttons, bool desiredState)
+		{
+			foreach (var button in buttons)
+			{
+				button.gameObject.SetActive(desiredState);
+			}
+		}
     }
 }
