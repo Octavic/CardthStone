@@ -155,7 +155,7 @@ namespace Assets.Scripts
             this.MyPlayerState.MulliganCard(targetCard);
         }
 
-		#region Normal card use
+		#region Card use
 		/// <summary>
 		/// Commits a normal card use on a creature or health card
 		/// </summary>
@@ -165,9 +165,9 @@ namespace Assets.Scripts
 		/// <param name="sourceId">the attacking creature, if applicable</param>
 		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
 		[Command]
-		public void CmdCommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		public void CmdCommitCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
 		{
-			this.CommitNormalCardUse(intent, issuingPlayerId, card, sourceId, targetId);
+			this.CommitCardUse(intent, issuingPlayerId, card, sourceId, targetId);
 		}
 
 		/// <summary>
@@ -179,9 +179,9 @@ namespace Assets.Scripts
 		/// <param name="sourceId">the attacking creature, if applicable</param>
 		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
 		[ClientRpc]
-		public void RpcCommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		public void RpcCommitCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
 		{
-			this.CommitNormalCardUse(intent, issuingPlayerId, card, sourceId, targetId);
+			this.CommitCardUse(intent, issuingPlayerId, card, sourceId, targetId);
 		}
 
 		/// <summary>
@@ -192,7 +192,7 @@ namespace Assets.Scripts
 		/// <param name="card">the card involved, null if creature combat</param>
 		/// <param name="sourceId">the attacking creature, if applicable</param>
 		/// <param name="targetId">the receiver, either creature Id or player Id if applicable</param>
-		private void CommitNormalCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
+		public void CommitCardUse(IntentEnum intent, int issuingPlayerId, Card card, int sourceId, int targetId)
 		{
 			IntentManager.CurrentInstance.AddIntent(intent, issuingPlayerId, card, sourceId, targetId);
 			TurnManager.CurrentInstance.Render();

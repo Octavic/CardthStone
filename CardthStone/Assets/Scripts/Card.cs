@@ -109,6 +109,7 @@ namespace Assets.Scripts
             return (a.CardSuit != b.CardSuit || a.CardNumber != b.CardNumber);
         }
 
+
         /// <summary>
         /// Overrides the equals function
         /// </summary>

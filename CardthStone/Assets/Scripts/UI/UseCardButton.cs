@@ -29,35 +29,71 @@ namespace Assets.Scripts.UI
 			if (!isAce)
 			{
 				// Grab the selected card and creature and verify
-				var card = CardBehavior.CurrentlySelected;
-				if (card == null)
+				var selectedCard = CardBehavior.CurrentlySelected;
+				if (selectedCard == null)
 				{
 					Debug.Log("No card selected!");
 					return;
 				}
 
-				card.OnUserClick();
-				var creature = CreatureBehavior.CurrentlySelected;
-				if (creature == null)
+				var selectedFriendly = CreatureBehavior.CurrentlySelectedFriendly;
+				var selectedEnemy = CreatureBehavior.CurrentlySelectedEnemy;
+				var selectedHealth = PlayerHealthCards.CurrentlySelected;
+
+				int targetId = -1;
+				if (selectedFriendly != null && selectedEnemy == null && selectedHealth == null)
 				{
-					Debug.Log("No creature selected!");
+					targetId = selectedFriendly.TargetCreature.CreatureId;
+					selectedFriendly.OnUserClick();
+				}
+				else if (selectedEnemy != null && selectedFriendly == null && selectedHealth == null)
+				{
+					targetId = selectedEnemy.TargetCreature.CreatureId;
+					selectedEnemy.OnUserClick();
+				}
+				else if (selectedHealth != null && selectedFriendly == null && selectedEnemy == null)
+				{
+					targetId = selectedHealth.PlayerId;
+					selectedHealth.OnUserClick();
+				}
+				else
+				{
+					Debug.Log("None or multiple creatures/health selected!");
 					return;
 				}
 
 				// Decide intent
 				IntentEnum intent;
-				switch (card.PokerCard.CardSuit)
+				switch (selectedCard.PokerCard.CardSuit)
 				{
-					case CardSuitEnum.Club:
-						intent = IntentEnum.BuffCreatureAttack;
-						break;
-					case CardSuitEnum.Diamond:
+					case CardSuitEnum.Spade:
 						intent = IntentEnum.DirectDamage;
 						break;
 					case CardSuitEnum.Heart:
+						if (targetId >= Settings.MaxPlayerCount)
+						{
+							Debug.Log("Heart cards can only be used on health!");
+							return;
+						}
+
 						intent = IntentEnum.PlaceHeathCard;
 						break;
+					case CardSuitEnum.Club:
+						if (targetId < Settings.MaxPlayerCount)
+						{
+							Debug.Log("Club cards cannot be used on health!");
+							return;
+						}
+
+						intent = IntentEnum.BuffCreatureAttack;
+						break;
 					default:
+						if (targetId < Settings.MaxPlayerCount)
+						{
+							Debug.Log("Club cards cannot be used on health!");
+							return;
+						}
+
 						intent = IntentEnum.BuffCreatureDefense;
 						break;
 				}
@@ -66,11 +102,12 @@ namespace Assets.Scripts.UI
 				var localPlayer = PlayerController.LocalPlayer;
 				if (localPlayer.isServer)
 				{
-					localPlayer.RpcCommitNormalCardUse(intent, localPlayer.PlayerId, card.PokerCard, -1, creature.TargetCreature.CreatureId);
+					localPlayer.RpcCommitCardUse(intent, localPlayer.PlayerId, selectedCard.PokerCard, -1, targetId);
 				}
 				else
 				{
-					localPlayer.CmdCommitNormalCardUse(intent, localPlayer.PlayerId, card.PokerCard, -1, creature.TargetCreature.CreatureId);
+					localPlayer.CmdCommitCardUse(intent, localPlayer.PlayerId, selectedCard.PokerCard, -1, targetId);
+					localPlayer.CommitCardUse(intent, localPlayer.PlayerId, selectedCard.PokerCard, -1, targetId);
 				}
 
 				TurnManager.CurrentInstance.Render();

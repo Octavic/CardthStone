@@ -106,6 +106,16 @@ namespace Assets.Scripts.Managers
             this.DeckCount.text = cardCount.ToString();
         }
 
+		/// <summary>
+		/// Re-renders everything
+		/// </summary>
+		public void RenderAll()
+		{
+			this.RenderCreatureArea();
+			this.RenderPlayerHand();
+			this.RenderPlayerHealthCards();
+		}
+
         /// <summary>
         /// Re-renders the creature area to reflect changes
         /// </summary>

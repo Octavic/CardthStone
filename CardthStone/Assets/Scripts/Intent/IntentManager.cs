@@ -38,6 +38,11 @@ namespace Assets.Scripts.Intent
 		public GameObject PassTurnButton;
 
 		/// <summary>
+		/// The button that accepts the creature combat action
+		/// </summary>
+		public GameObject CreatureAttackButton;
+
+		/// <summary>
 		/// Component for the last played intent card object
 		/// </summary>
 		public LastPlayedIntentCard LastPlayedIntentCardComponent;
@@ -87,7 +92,9 @@ namespace Assets.Scripts.Intent
 		{
 			// Grabs the selected card and selected creature
 			var selectedCard = CardBehavior.CurrentlySelected;
-			var selectedCreature = CreatureBehavior.CurrentlySelected;
+			var selectedFriendCreature = CreatureBehavior.CurrentlySelectedFriendly;
+			var selectedEnemyCreature = CreatureBehavior.CurrentlySelectedEnemy;
+			var selectedHealthCard = PlayerHealthCards.CurrentlySelected;
 
 			// Check controllers
 			var gameController = GameController.CurrentInstance;
@@ -102,10 +109,10 @@ namespace Assets.Scripts.Intent
 				return;
 			}
 
-			// Determine turn
+			// Determine turn related variables
 			var isPlayerNormalTurn = gameController.CurrentPlayerId == playerController.PlayerId;
-			var hasPendingIntentions = this.ActionStack.Count > 0;
 			bool isPlayerCounterTurn = false;
+			var hasPendingIntentions = this.ActionStack.Count > 0;
 
 			IntentAction lastAction = this.ActionStack.Count == 0 ? null : this.ActionStack.Peek();
 			if (lastAction != null && lastAction.IssuingPlayerId != playerController.PlayerId)
@@ -132,30 +139,59 @@ namespace Assets.Scripts.Intent
 				return;
 			}
 
-			// Check selected card
+			// If there is a card selected
 			if (selectedCard != null)
 			{
+				// Card selected, cannot initiate creature combat
+				this.CreatureAttackButton.SetActive(false);
+
+				// Grabs the card value
 				var selectedCardValue = selectedCard.PokerCard;
 
-				// Check if a creature is also selected
-				if (selectedCreature != null)
+				// Check if only one of the three is selected
+				if (selectedFriendCreature != null
+				^ selectedEnemyCreature != null
+				^ selectedHealthCard != null)
 				{
-					// Creature and card both selected, check if it's player's turn to do anything and if card can be used
-					if ((isPlayerCounterTurn || isPlayerNormalTurn) && selectedCardValue.CardNumber <= 10)
+					// Check if it's player's turn to do anything and if the card is NOT a relic
+					if ((isPlayerCounterTurn || isPlayerNormalTurn)
+						&& selectedCardValue.CardNumber <= 10)
 					{
-						this.UseCardButton.SetActive(true);
+						// Check suits to see if the selected suit is valid
+						// Check spade, can be used on creatures and health cards
+						if (selectedCardValue.CardSuit == CardSuitEnum.Spade)
+						{
+							this.UseCardButton.SetActive(true);
+							this.UseAcePowerButton.SetActive(selectedCardValue.CardNumber == 1);
+						}
+						// Check creature buff/debuff, must NOT have health selected
+						else if (selectedCardValue.CardSuit == CardSuitEnum.Club || selectedCardValue.CardSuit == CardSuitEnum.Diamond)
+						{
+							this.UseCardButton.SetActive(!selectedHealthCard);
+							this.UseAcePowerButton.SetActive(!selectedHealthCard && selectedCardValue.CardNumber == 1);
+						}
+						// Check place health card, must only have health selected
+						else
+						{
+							this.UseCardButton.SetActive(selectedHealthCard);
+							this.UseAcePowerButton.SetActive(selectedHealthCard && selectedCardValue.CardNumber == 1);
+						}
 
 						this.UseAcePowerButton.SetActive(selectedCardValue.CardNumber == 1);
 					}
-					// Selected card is J, Q, or K, or user is not in turn right now
+					// Selected card is relic, or player is not in turn, or the card and creature/health card combo does not work
 					else
 					{
 						this.UseCardButton.SetActive(false);
 						this.UseAcePowerButton.SetActive(false);
 					}
 				}
-				else
+				// Check if none of the 3 is selected for counter
+				else if (selectedEnemyCreature == null
+					&& selectedFriendCreature == null
+					&& selectedHealthCard == null)
 				{
+					// Can't just use card
 					this.UseCardButton.SetActive(false);
 					this.UseAcePowerButton.SetActive(false);
 
@@ -163,6 +199,7 @@ namespace Assets.Scripts.Intent
 					if (lastAction != null
 						&& hasPendingIntentions
 						&& isPlayerCounterTurn
+						// Cannot counter creature attack or turn pass
 						&& lastAction.Intent != IntentEnum.CreatureAttack
 						&& lastAction.Intent != IntentEnum.PassTurn
 						&& Helpers.SuitToColor(lastAction.Card.CardSuit) != Helpers.SuitToColor(selectedCardValue.CardSuit)
@@ -175,12 +212,46 @@ namespace Assets.Scripts.Intent
 						this.CounterSpellButton.SetActive(false);
 					}
 				}
+				// Card and multiple targets selected, does not work
+				else
+				{
+					this.CounterSpellButton.SetActive(false);
+					this.UseAcePowerButton.SetActive(false);
+					this.UseCardButton.SetActive(false);
+				}
 			}
+			// No card selected
 			else
 			{
+				// Can't use any card related buttons
 				this.CounterSpellButton.SetActive(false);
 				this.UseAcePowerButton.SetActive(false);
 				this.UseCardButton.SetActive(false);
+
+				// Check if there's an attacker selected
+				if (selectedFriendCreature == null)
+				{
+					this.CreatureAttackButton.SetActive(false);
+				}
+				else
+				{
+					var friendlyCreatureAttackColor = Helpers.SuitToColor(selectedFriendCreature.TargetCreature.AttackCard.CardSuit);
+
+					// If only health card is selected, any creature can attack that
+					if (selectedHealthCard != null && selectedEnemyCreature == null)
+					{
+						this.CreatureAttackButton.SetActive(true);
+					}
+					// If creature try to attack creature, it must have black as attack
+					else if (selectedEnemyCreature != null && selectedHealthCard == null && friendlyCreatureAttackColor == CardColorEnum.Black)
+					{
+						this.CreatureAttackButton.SetActive(true);
+					}
+					else
+					{
+						this.CreatureAttackButton.SetActive(false);
+					}
+				}
 			}
 		}
 
@@ -203,6 +274,8 @@ namespace Assets.Scripts.Intent
 				{
 					curCreature = CreatureBehavior.Creatures[curIntent.TargetId];
 				}
+
+				// Grab the corresponding playerState
 
 				switch (curIntent.Intent)
 				{
@@ -228,6 +301,9 @@ namespace Assets.Scripts.Intent
 								newCreature.BuffAttack(curIntent.Card);
 								creatures.RemoveAt(i);
 								creatures.Insert(i, newCreature);
+
+								// Discard
+								PlayerStateManager.CurrentInstance.PlayerStates[curIntent.IssuingPlayerId].PlayerHand.Remove(curIntent.Card);
 							}
 						}
 						break;
@@ -248,6 +324,9 @@ namespace Assets.Scripts.Intent
 								newCreature.BuffDefense(curIntent.Card);
 								creatures.RemoveAt(i);
 								creatures.Insert(i, newCreature);
+
+								// Discard
+								PlayerStateManager.CurrentInstance.PlayerStates[curIntent.IssuingPlayerId].PlayerHand.Remove(curIntent.Card);
 							}
 						}
 						break;
@@ -257,8 +336,8 @@ namespace Assets.Scripts.Intent
 			// Re-render creature area
 			TurnManager.CurrentInstance.Render();
 			this.Render();
-			playerController.MyPlayerState.Displayer.RenderCreatureArea();
-			playerController.EnemyPlayerState.Displayer.RenderCreatureArea();
+			playerController.MyPlayerState.Displayer.RenderAll();
+			playerController.EnemyPlayerState.Displayer.RenderAll();
 		}
 
 		/// <summary>
@@ -281,6 +360,7 @@ namespace Assets.Scripts.Intent
 			this.CounterSpellButton.SetActive(false);
 			this.UseAcePowerButton.SetActive(false);
 			this.UseCardButton.SetActive(false);
+			this.CreatureAttackButton.SetActive(false);
 		}
 	}
 }

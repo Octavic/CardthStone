@@ -54,7 +54,12 @@ namespace Assets.Scripts
 		/// <summary>
 		/// The currently selected creature
 		/// </summary>
-		public static CreatureBehavior CurrentlySelected;
+		public static CreatureBehavior CurrentlySelectedFriendly;
+
+		/// <summary>
+		/// The current selected enemy creature
+		/// </summary>
+		public static CreatureBehavior CurrentlySelectedEnemy;
 
 		/// <summary>
 		/// The creature that this creature behavior is representing
@@ -82,9 +87,14 @@ namespace Assets.Scripts
         private static ColorManager _colorManager;
 
 		/// <summary>
-		/// If this creature is selected
+		/// Player Id of the local player
 		/// </summary>
-		private bool _isSelected;
+		private static int _localPlayerId = -1;
+
+		///// <summary>
+		///// If this creature is selected
+		///// </summary>
+		//private bool _isSelected;
 
         /// <summary>
         /// Spawns the creature
@@ -105,28 +115,58 @@ namespace Assets.Scripts
 		/// </summary>
 		public void OnUserClick()
 		{
-			this._isSelected = !this._isSelected;
-
-			// Pops the new selected card out
-			this.SelectBoarder.SetActive(this._isSelected);
-
-			// Unselect the current card
-			if (CreatureBehavior.CurrentlySelected != null)
+			if (_localPlayerId == -1)
 			{
-				CreatureBehavior.CurrentlySelected.SelectBoarder.SetActive(false);
+				_localPlayerId = PlayerController.LocalPlayer.PlayerId;
+			}
+			
+			// Toggle the boarder
+			this.SelectBoarder.SetActive(!this.SelectBoarder.activeSelf);
 
-				if (CreatureBehavior.CurrentlySelected == this)
+			// Check to see if the clicked creature is friendly or enemy
+			bool isFriendly = this.TargetCreature.OwnerUserId == _localPlayerId;
+
+			// Sets the state based on friend/enemy
+			if (isFriendly)
+			{
+				// If there was one already selected, unselect
+				if (CreatureBehavior.CurrentlySelectedFriendly != null)
 				{
-					CreatureBehavior.CurrentlySelected = null;
+					CreatureBehavior.CurrentlySelectedFriendly.SelectBoarder.SetActive(false);
+
+					if (CreatureBehavior.CurrentlySelectedFriendly == this)
+					{
+						CreatureBehavior.CurrentlySelectedFriendly = null;
+					}
+					else
+					{
+						CreatureBehavior.CurrentlySelectedFriendly = this;
+					}
 				}
 				else
 				{
-					CreatureBehavior.CurrentlySelected = this;
+					CreatureBehavior.CurrentlySelectedFriendly = this;
 				}
 			}
 			else
 			{
-				CreatureBehavior.CurrentlySelected = this;
+				if (CreatureBehavior.CurrentlySelectedEnemy != null)
+				{
+					CreatureBehavior.CurrentlySelectedEnemy.SelectBoarder.SetActive(false);
+
+					if (CreatureBehavior.CurrentlySelectedEnemy == this)
+					{
+						CreatureBehavior.CurrentlySelectedEnemy = null;
+					}
+					else
+					{
+						CreatureBehavior.CurrentlySelectedEnemy = this;
+					}
+				}
+				else
+				{
+					CreatureBehavior.CurrentlySelectedEnemy = this;
+				}
 			}
 
 			// Update the intent manager
@@ -174,7 +214,7 @@ namespace Assets.Scripts
         {
             this.TargetCreature.IsTapped = false;
             this.TargetCreature.HaveSummoningSickness = true;
-			this._isSelected = false;
+			//this._isSelected = false;
         }
     }
 }

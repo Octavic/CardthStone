@@ -6,20 +6,36 @@
 
 namespace Assets.Scripts.UI
 {
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using UnityEngine;
-    using UnityEngine.UI;
-    using Managers;
-    using States;
+	using System;
+	using System.Collections.Generic;
+	using System.Linq;
+	using System.Text;
+	using UnityEngine;
+	using UnityEngine.UI;
+	using Managers;
+	using States;
+	using Intent;
 
-    /// <summary>
-    /// Shows the player's health card
-    /// </summary>
-    public class PlayerHealthCards : MonoBehaviour
+	/// <summary>
+	/// Shows the player's health card
+	/// </summary>
+	public class PlayerHealthCards : MonoBehaviour
     {
+		/// <summary>
+		/// The boarder game object
+		/// </summary>
+		public GameObject BoarderGameObject;
+
+		/// <summary>
+		/// Gets the currently selected health card
+		/// </summary>
+		public static PlayerHealthCards CurrentlySelected { get; private set; }
+
+		/// <summary>
+		/// Gets the player id that this health card is for
+		/// </summary>
+		public int PlayerId { get; private set; }
+
         /// <summary>
         /// The current list of card objects
         /// </summary>
@@ -32,6 +48,9 @@ namespace Assets.Scripts.UI
         /// <param name="showCards">True if the cards should be shown</param>
         public void RenderPlayerHealthCards(PlayerState playerState, bool showCards = true)
         {
+			// Sets the player Id
+			this.PlayerId = playerState.PlayerId;
+
             // Erase all current cards and recreate
             foreach (Transform child in transform)
             {
@@ -70,6 +89,36 @@ namespace Assets.Scripts.UI
             this.transform.localPosition = new Vector3(-this.CardGameObjects.Count * Settings.PlayerHandCardDistance / 2, 0);
         }
 
+		/// <summary>
+		/// When the player hearth card is clicked
+		/// </summary>
+		public void OnUserClick()
+		{
+			// Toggle boarder
+			this.BoarderGameObject.SetActive(!this.BoarderGameObject.activeSelf);
+
+			// If there was one already selected, unselect
+			if (PlayerHealthCards.CurrentlySelected != null)
+			{
+				PlayerHealthCards.CurrentlySelected.BoarderGameObject.SetActive(false);
+
+				if (PlayerHealthCards.CurrentlySelected == this)
+				{
+					PlayerHealthCards.CurrentlySelected = null;
+				}
+				else
+				{
+					PlayerHealthCards.CurrentlySelected = this;
+				}
+			}
+			else
+			{
+				PlayerHealthCards.CurrentlySelected = this;
+			}
+
+			IntentManager.CurrentInstance.Render();
+		}
+		
         /// <summary>
         /// Creates a new card 
         /// </summary>
