@@ -74,7 +74,7 @@ namespace Assets.Scripts
         /// <summary>
         /// Get a state indicating whether the creature can jump in and block a creature's attack
         /// </summary>
-        public bool CanTargetBlock { get; private set; }
+        public bool CanBlock { get; private set; }
 
         /// <summary>
         /// The current instance of the sprite manager
@@ -192,7 +192,7 @@ namespace Assets.Scripts
             var baseDefenseCard = this.TargetCreature.DefenseCard;
 
             this.CanTargetAttack = Helpers.SuitToColor(baseAttackCard.CardSuit) == CardColorEnum.Black;
-            this.CanTargetBlock = Helpers.SuitToColor(baseDefenseCard.CardSuit) == CardColorEnum.Red;
+            this.CanBlock = Helpers.SuitToColor(baseDefenseCard.CardSuit) == CardColorEnum.Red;
 
             // Assign the suit sprite
             this.AttackSuitRenderer.sprite = _spriteManager.SuitIconSprites[(int)this.TargetCreature.AttackCard.CardSuit];

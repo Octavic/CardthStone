@@ -1,10 +1,10 @@
 ﻿//--------------------------------------------------------------------------------------------------------------------
-//  <copyright file="HealthAssignUI.cs" company="Yifei Xu">
+//  <copyright file="LastIntentIndicator.cs" company="Yifei Xu">
 //    Copyright (c) Yifei Xu.  All rights reserved.
 //  </copyright>
 //--------------------------------------------------------------------------------------------------------------------
 
-namespace Assets.Scripts.UI
+namespace Assets.Scripts.Intent
 {
 	using System;
 	using System.Collections.Generic;
@@ -18,7 +18,7 @@ namespace Assets.Scripts.UI
 	/// <summary>
 	/// Displays the last played intent card
 	/// </summary>
-	public class LastPlayedIntentCard : MonoBehaviour
+	public class LastIntentIndicator : MonoBehaviour
 	{
 		/// <summary>
 		/// The sprite renderer responsible for the card number

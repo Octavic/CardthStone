@@ -12,6 +12,7 @@ namespace Assets.Scripts.Intent
 	public enum IntentEnum
 	{
 		CreatureAttack,
+		CreatureBlock,
 		DirectDamage,
 		PlaceHeathCard,
 		BuffCreatureAttack,

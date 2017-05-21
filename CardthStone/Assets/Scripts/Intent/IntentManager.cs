@@ -43,9 +43,14 @@ namespace Assets.Scripts.Intent
 		public GameObject CreatureAttackButton;
 
 		/// <summary>
+		/// The button that initiates creature block action
+		/// </summary>
+		public GameObject CreatureBlockButton;
+
+		/// <summary>
 		/// Component for the last played intent card object
 		/// </summary>
-		public LastPlayedIntentCard LastPlayedIntentCardComponent;
+		public LastIntentIndicator LastPlayedIntentCardComponent;
 		#endregion
 
 		/// <summary>
@@ -223,7 +228,7 @@ namespace Assets.Scripts.Intent
 			// No card selected
 			else
 			{
-				// Can't use any card related buttons
+				// Can't use any card related buttons if there are no cards selected
 				this.CounterSpellButton.SetActive(false);
 				this.UseAcePowerButton.SetActive(false);
 				this.UseCardButton.SetActive(false);
@@ -232,24 +237,58 @@ namespace Assets.Scripts.Intent
 				if (selectedFriendCreature == null)
 				{
 					this.CreatureAttackButton.SetActive(false);
+					this.CreatureBlockButton.SetActive(false);
 				}
 				else
 				{
-					var friendlyCreatureAttackColor = Helpers.SuitToColor(selectedFriendCreature.TargetCreature.AttackCard.CardSuit);
-
-					// If only health card is selected, any creature can attack that
-					if (selectedHealthCard != null && selectedEnemyCreature == null)
+					// Decides the state of the attack button. It can only happen as the first attack
+					if (this.ActionStack.Count == 0)
 					{
-						this.CreatureAttackButton.SetActive(true);
+						// If only health card is selected, any creature can attack that
+						if (selectedHealthCard != null && selectedEnemyCreature == null)
+						{
+							this.CreatureAttackButton.SetActive(true);
+						}
+						// If creature try to attack creature, it must have black as attack
+						else if (
+							selectedEnemyCreature != null
+							&& selectedFriendCreature.CanTargetAttack
+							&& selectedHealthCard == null)
+						{
+							this.CreatureAttackButton.SetActive(true);
+						}
+						else
+						{
+							this.CreatureAttackButton.SetActive(false);
+						}
 					}
-					// If creature try to attack creature, it must have black as attack
-					else if (selectedEnemyCreature != null && selectedHealthCard == null && friendlyCreatureAttackColor == CardColorEnum.Black)
-					{
-						this.CreatureAttackButton.SetActive(true);
-					}
+					// There's already pending actions, cannot initiate new attack
 					else
 					{
 						this.CreatureAttackButton.SetActive(false);
+					}
+
+					// Decides the state of the block button. It can only be done if there's an attack happening
+					if (this.ActionStack.Count == 1 && this.ActionStack.Peek().Intent == IntentEnum.CreatureAttack && isPlayerCounterTurn)
+					{
+						// Must have only an ally unit selected, and the ally must be able to block
+						if (
+							selectedFriendCreature != null 
+							&& selectedFriendCreature.CanBlock
+							&& selectedEnemyCreature == null 
+							&& selectedHealthCard == null
+							&&isPlayerCounterTurn)
+						{
+							this.CreatureBlockButton.SetActive(true);
+						}
+						else
+						{
+							this.CreatureBlockButton.SetActive(false);
+						}
+					}
+					else
+					{
+						this.CreatureBlockButton.SetActive(false);
 					}
 				}
 			}
@@ -361,6 +400,7 @@ namespace Assets.Scripts.Intent
 			this.UseAcePowerButton.SetActive(false);
 			this.UseCardButton.SetActive(false);
 			this.CreatureAttackButton.SetActive(false);
+			this.CreatureBlockButton.SetActive(false);
 		}
 	}
 }

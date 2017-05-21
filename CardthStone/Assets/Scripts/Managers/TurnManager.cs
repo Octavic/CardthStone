@@ -1,5 +1,4 @@
-﻿
-//--------------------------------------------------------------------------------------------------------------------
+﻿//--------------------------------------------------------------------------------------------------------------------
 //  <copyright file="TurnManager.cs" company="Yifei Xu">
 //    Copyright (c) Yifei Xu.  All rights reserved.
 //  </copyright>
@@ -80,7 +79,7 @@ namespace Assets.Scripts.Managers
 		}
 
         /// <summary>
-        /// Called once per frame
+        /// Called when turn related elements needs to be rendered
         /// </summary>
         public void Render()
         {
@@ -115,6 +114,9 @@ namespace Assets.Scripts.Managers
                     this.SetAllButtonInteractState(this.NormalActionOnlyButtons, false);
 				}
             }
+
+			// Also redraw the intent buttons
+			IntentManager.CurrentInstance.Render();
         }
 
 		/// <summary>
